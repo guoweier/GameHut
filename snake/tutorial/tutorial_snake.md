@@ -32,8 +32,8 @@ Here are the main blocks of my python script:<br>
 ### Import essential package
 We need to import essential packages first. Here are my codes for pygame package import:<br>
 ```
-import pygame, sys, random
-from pygame.locals import *
+1   import pygame, sys, random
+2   from pygame.locals import *
 ```
 I import 3 packages: pygame, sys, random.<br>
 - `pygame` is the package for making snake. 
