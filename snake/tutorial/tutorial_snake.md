@@ -528,11 +528,11 @@ If using VS code, you can open a new Terminal window using the top bar: Terminal
 ### Go to the folder where contains the python script. 
 In the terminal window, run command: `cd /path_to_snake_folder/` <br>
 
-### Run the program.
+### Run program
 In the terminal window, run command: `python snake.py` <br>
 We wait for several seconds, and will see a new window jumps out. This is the game window! Feel free to enjoy the snake game! <br>
 
-## conclusion
+## Conclusion
 This article introduces how to make a snake game using python. To sum up, it consists of these aspects:<br>
 1. import essential packages (pygame, sys, random)
 2. set up variables and functions
