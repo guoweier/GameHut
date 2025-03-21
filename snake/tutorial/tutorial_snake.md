@@ -158,15 +158,15 @@ We will have a 600x600 black background window. The window title is Snake. <br>
 Now, let's start adding contents! <br>
 
 I designed 3 windows for my snake game:<br>
-**1. window1: Start window**
-**2. window2: Game playing window**
-**3. window3: Game over window**
+**1. window1: Start window**<br>
+**2. window2: Game playing window**<br>
+**3. window3: Game over window**<br>
 
 Here are my pseudocode for arranging 3 windows:<br>
 
-***#window1***
-***Code for window1***
-***while True: # 1st loop***
+***#window1***<br>
+***Code for window1***<br>
+***while True: # 1st loop***<br>
     #window2
     code for window2 initialization
     while True: # 2nd loop
