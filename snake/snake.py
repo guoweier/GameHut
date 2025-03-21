@@ -9,7 +9,6 @@ FPS = 10
 SPACESIZE = 25
 SNAKECOLOR = (255,0,0)
 SNAKELENGTH = 3
-SNAKESPEED = 5
 FOODCOLOR = (0,255,0)
 
 def terminate():
@@ -29,7 +28,8 @@ def waitForPlayerToPressKey():
 def drawText(text, font, surface, x, y):
     textobj = font.render(text, 1, TEXTCOLOR)
     textrect = textobj.get_rect()
-    textrect.topleft = (x,y)
+    textrect.centerx = x
+    textrect.centery = y
     surface.blit(textobj, textrect)
 
 # set up pygame, the window
@@ -46,14 +46,10 @@ pygame.mixer.music.load('Soundbackground_CasaRosa.mp3')
 # set up the fonts
 font = pygame.font.SysFont(None, 36)
 
-
-
-
-
 # show the "Start" screen
 windowSurface.fill(BACKGROUNDCOLOR)
-drawText('Welcome to the Snake!', font, windowSurface, (WINDOWWIDTH/3), (WINDOWHEIGHT/3))
-drawText('Press a key to start.', font, windowSurface, (WINDOWWIDTH/3)-30, (WINDOWHEIGHT/3)+50)
+drawText('Welcome to the Snake!', font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery-50)
+drawText('Press a key to start.', font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery)
 pygame.display.update()
 waitForPlayerToPressKey()
 
@@ -78,7 +74,9 @@ while True:
             if event.type == QUIT:
                 terminate()
             elif event.type == KEYDOWN:
-                if (event.key == K_LEFT or event.key == K_a) and direction != (SPACESIZE, 0):
+                if event.key == K_ESCAPE:
+                    terminate()
+                elif (event.key == K_LEFT or event.key == K_a) and direction != (SPACESIZE, 0):
                     direction = (-SPACESIZE, 0)
                 elif (event.key == K_RIGHT or event.key == K_d) and direction != (-SPACESIZE, 0):
                     direction = (SPACESIZE, 0)
@@ -86,9 +84,7 @@ while True:
                     direction = (0, -SPACESIZE)
                 elif (event.key == K_DOWN or event.key == K_s) and direction != (0, -SPACESIZE):
                     direction = (0, SPACESIZE)
-            elif event.type == KEYUP:
-                if event.key == K_ESCAPE:
-                    terminate()
+                    
 
         # snake next turn
         new_head = (snake[0][0]+direction[0], snake[0][1]+direction[1])
@@ -121,10 +117,17 @@ while True:
     pygame.mixer.music.stop()
     gameOverSound.play()
 
-    drawText("GAME OVER", font, windowSurface, (WINDOWWIDTH/3), (WINDOWHEIGHT/3))
-    drawText(f"Your Score: {score}", font, windowSurface, (WINDOWWIDTH/3)+20, (WINDOWHEIGHT/3)+50)
-    drawText(f"Top Score: {topScore}", font, windowSurface, (WINDOWWIDTH/3)+20, (WINDOWHEIGHT/3)+100)
-    drawText("Press a key to play again.", font, windowSurface, (WINDOWWIDTH/3)-80, (WINDOWHEIGHT/3)+150)
+    transparent_surface = pygame.Surface((400,300))
+    transparent_surface.fill((255, 255, 255))
+    transparent_surface.set_alpha(70)
+    surface = transparent_surface.get_rect()
+    surface.centerx = windowSurface.get_rect().centerx
+    surface.centery = windowSurface.get_rect().centery
+    windowSurface.blit(transparent_surface, surface)
+    drawText("GAME OVER", font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery-80)
+    drawText(f"Your Score: {score}", font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery-30)
+    drawText(f"Top Score: {topScore}", font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery+20)
+    drawText("Press a key to play again.", font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery+70)
     pygame.display.update()
     waitForPlayerToPressKey()
     gameOverSound.stop()
