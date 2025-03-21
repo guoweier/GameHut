@@ -47,18 +47,18 @@ Now, we are able to program the game. <br>
 There are many variables and block of codes that repeatedly used during this script. We can set them up at the beginning, so then we do not have to type them again and again. Also, if in the future, we would like to change them, we only need to change them once at the beginning. <br>
 Here are my variables:<br>
 ```
-WINDOWWIDTH = 600
-WINDOWHEIGHT = 600
-TEXTCOLOR = (255,255,255)
-BACKGROUNDCOLOR = (0,0,0)
-FPS = 10
-SPACESIZE = 25
-SNAKECOLOR = (255,0,0)
-SNAKELENGTH = 3
-FOODCOLOR = (0,255,0)
+4   WINDOWWIDTH = 600
+5   WINDOWHEIGHT = 600
+6   TEXTCOLOR = (255,255,255)
+7   BACKGROUNDCOLOR = (0,0,0)
+8   FPS = 10
+9   SPACESIZE = 25
+10  SNAKECOLOR = (255,0,0)
+11  SNAKELENGTH = 3
+12  FOODCOLOR = (0,255,0)
 ```
-- `WINDOWWIDTH` and `WINDOWHEIGHT` represent the width and height of the game window. Their units are pixels. I set them both to 600. 
-- `TEXTCOLOR` represents the color of text displayed on the game window. Here I use RGB format to represent the color. I set the text color to be white. 
+- **Line 4&5**: `WINDOWWIDTH` and `WINDOWHEIGHT` represent the width and height of the game window. Their units are pixels. I set them both to 600. 
+- **Line 6**: `TEXTCOLOR` represents the color of text displayed on the game window. Here I use RGB format to represent the color. I set the text color to be white. 
 - `BACKGROUNDCOLOR` represents the window's background color. I set it to be black.
 - `FPS` (frame per second) controls how fast the game updates. The animation of the game (i.e. the snake move around) is caused by the continueous updates of the window. To keep a consistent moving speed, we need FPS to maintain a fixed frame rate. Here I set it to be 10. 
 - `SPACESIZE` represents the snake and food unit length. In my game, the single unit of snake and food are squares. Food is a single square, snake is composed of several squares. I set the square unit length to be 25 pixels. 
@@ -69,9 +69,9 @@ FOODCOLOR = (0,255,0)
 Then here are my functions:<br>
 1. terminate()
 ```
-def terminate():
-    pygame.quit()
-    sys.exit()
+14  def terminate():
+15      pygame.quit()
+16      sys.exit()
 ```
 When the player decides to exit the game, we need to let the game stop, the game window disappears on the computer screen, and the program stop running. This process will be called several times in the script, so we can write them into a function. It is composed of 3 lines: <br>
 - `def terminate():` defines the function name
