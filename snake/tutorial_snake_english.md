@@ -29,23 +29,23 @@ Here are the main blocks of my python script:<br>
     b. game playing window<br>
     c. game over window<br>
 
-### import essential package
+### Import essential package
 We need to import essential packages first. Here are my codes for pygame package import:<br>
 ```
 import pygame, sys, random
 from pygame.locals import *
 ```
-I import 3 packages: pygame, sys, random.
-- pygame is the package for making snake. 
-- sys is the module provides access to variables and functions that interact with the computer interpreter. It is always available and no need for installation. 
-- random is the module for generating random numbers. We will use its functions when making food during the game. 
-Besides, I add a line as `from pygame.locals import *`. `pygame.locals` is the module contains many variables that we will use, such as `QUIT`, which helps to quit the program, and `K_ESCAPE`, which represents the `ESC` key on the keyboard. 
-I setup the pygame.locals as `*` when importing it. This can let me use `pygame.locals` without typing `pygame.locals` in front of every method, constant, or anything else call from the moduele. 
-Now, we are able to program the game. 
+I import 3 packages: pygame, sys, random.<br>
+- `pygame` is the package for making snake. 
+- `sys` is the module provides access to variables and functions that interact with the computer interpreter. It is always available and no need for installation. 
+- `random` is the module for generating random numbers. We will use its functions when making food during the game. 
+Besides, I add a line as `from pygame.locals import *`. `pygame.locals` is the module contains many variables that we will use, such as `QUIT`, which helps to quit the program, and `K_ESCAPE`, which represents the `ESC` key on the keyboard. <br>
+I setup the pygame.locals as `*` when importing it. This can let me use `pygame.locals` without typing `pygame.locals` in front of every method, constant, or anything else call from the moduele. <br>
+Now, we are able to program the game. <br>
 
-### set up variables and functions
-There are many variables and block of codes that repeatedly used during this script. We can set them up at the beginning, so then we do not have to type them again and again. Also, if in the future, we would like to change them, we only need to change them once at the beginning. 
-Here are my variables:
+### Set up variables and functions
+There are many variables and block of codes that repeatedly used during this script. We can set them up at the beginning, so then we do not have to type them again and again. Also, if in the future, we would like to change them, we only need to change them once at the beginning. <br>
+Here are my variables:<br>
 ```
 WINDOWWIDTH = 600
 WINDOWHEIGHT = 600
@@ -66,14 +66,14 @@ FOODCOLOR = (0,255,0)
 - `SNAKELENGTH` indicates how many square unit of the snake at the start of the game. I set it to be 3. 
 - `FOODCOLOR` represents the food color. I set it to be green. 
 
-Then here are my functions:
+Then here are my functions:<br>
 1. terminate()
 ```
 def terminate():
     pygame.quit()
     sys.exit()
 ```
-When the player decides to exit the game, we need to let the game stop, the game window disappears on the computer screen, and the program stop running. This process will be called several times in the script, so we can write them into a function. It is composed of 3 lines: 
+When the player decides to exit the game, we need to let the game stop, the game window disappears on the computer screen, and the program stop running. This process will be called several times in the script, so we can write them into a function. It is composed of 3 lines: <br>
 - `def terminate():` defines the function name
 - `pygame.quit()` close the game properly without it may leave system background processes running, which can be harmful for the computer. 
 - `sys.exit()` ensures the program fully exits after the pygame module stops. 
@@ -90,7 +90,7 @@ def waitForPlayerToPressKey():
                     terminate()
                 return 
 ```
-During the game, player can press the key to let the game start, or directly exit the game. When player presses `ESC` key or click `x` button on the window, the game exit; otherwise, any other key pressing will lead to new game start. 
+During the game, player can press the key to let the game start, or directly exit the game. When player presses `ESC` key or click `x` button on the window, the game exit; otherwise, any other key pressing will lead to new game start. <br>
 - `def waitForPlayerToPressKey():` defines the function name, 
 - `while True` sets up a loop. This means the game can continuously monitor the player action. It is always looping until it receives the key the player entered. 
 - `for event in pygame.event.get():`: the `pygame.event.get()` checks for any new event objects (i.e. the player presses a key) generated and put them into a list. This line use a for loop to check every event object inside the list. 
@@ -116,16 +116,15 @@ def drawText(text, font, surface, x, y):
     textrect.centery = y
     surface.blit(textobj, textrect)
 ```
-We will draw lots of text message on the game window during the programming. To do that, we needs to define several parameters such as where the text locates on the window, what the color of the text, etc. So we write them into a function to prevent repetitive typing. 
+We will draw lots of text message on the game window during the programming. To do that, we needs to define several parameters such as where the text locates on the window, what the color of the text, etc. So we write them into a function to prevent repetitive typing. <br>
 - `def drawText(text, font, surface, x, y):` defines the function name. This function have several parameters to input. `text` is the message needs to display. `font` is the text font. `surface` represents which surface the text needs to write on. `x` and `y` are the coordinates represent where the text will be written. 
 - `textobj = font.render(text, 1, TEXTCOLOR)` creates a text surface, which can be drawn onto the screen. Some variables are used: `text` is the message needs to display. `1` represents smooth text. `TEXTCOLOR` is the variable we previously defined. We assigned the output to an object named `textobj`. 
 - `textrect = textobj.get_rect()` is to create a rectangular area around the text. This can help to define the position and alignment of text when we draw it onto the screen. We assigned the output to `textrect`. 
 - `textrect.centerx = x` and `textrect.centery = y` assign `x` and `y` to the center location of generated text rectangle. We want the text to be centered on the screen, so we defined their center location at the begninning. 
 - `surface.blit(textobj, textrect)` draws `textobj` onto the `surface` at location `textrect`. 
 
-### set up window, fonts, sound
-We start with setting up some initial parameters. First, set up the game window. 
-Here are my code:
+### Set up window, fonts, sound
+We start with setting up some initial parameters. First, set up the game window. Here are my code:
 ```
 pygame.init()
 mainClock = pygame.time.Clock()
@@ -139,7 +138,7 @@ pygame.mouse.set_visible(False)
 - `pygame.display.set_caption('Snake')` sets the window title to 'Snake'. 
 - `pygame.mouse.set_visible(False)` sets the mouse cursor to be invisible during the game. 
 
-Next, I set up sounds and font for the game. 
+Next, I set up sounds and font for the game. <br>
 ```
 # sound
 gameOverSound = pygame.mixer.Sound('gameover.mp3')
@@ -147,22 +146,22 @@ pygame.mixer.music.load('Soundbackground_CasaRosa.mp3')
 # font
 font = pygame.font.SysFont(None, 36)
 ```
-I would like to have two different music: one during the game playing, the other for the game over window. I save the music in the same folder of this python script. 
+I would like to have two different music: one during the game playing, the other for the game over window. I save the music in the same folder of this python script. <br>
 - `gameOverSound = pygame.mixer.Sound('gameover.mp3')` loads the gameover.mp3 music. 
 - `pygame.mixer.music.load('Soundbackground_CasaRosa.mp3')` loads the background music Soundbackground_CasaRosa.mp3. 
 - `font = pygame.font.SysFont(None, 36)` creates font object. `None` means we have using the default system font. `36` is the font size. 
 
-We have finished initial parameters setting. Currently, these code will give us a window like this:
+We have finished initial parameters setting. Currently, these code will give us a window like this:<br>
 ![Game window after initial setting](fig2_initialgameset.png) <br>
-We will have a 600x600 black background window. The window title is Snake. 
-Now, let's start adding contents! 
+We will have a 600x600 black background window. The window title is Snake. <br>
+Now, let's start adding contents! <br>
 
-I designed 3 windows for my snake game:
+I designed 3 windows for my snake game:<br>
 1. window1: Start window
 2. window2: Game playing window
 3. window3: Game over window
 
-Here are my pseudocode for arranging 3 windows:
+Here are my pseudocode for arranging 3 windows:<br>
 ```
 # window1
 Code for window1
@@ -179,14 +178,13 @@ while True: # 1st loop
     elif the player terminate the program:
         break the 1st loop
 ```
-I set up two while loops for game running. The 1st loop controls the program, when it stops, the program terminates. The 2nd loop is nested inside the first loop, it controls the game playing (window2). When it monitors game over, it stops and display window3. This will be our to-do list. We will recall it several times later to check where we are. 
-Now, let's discuss details in each window. 
+I set up two while loops for game running. The 1st loop controls the program, when it stops, the program terminates. The 2nd loop is nested inside the first loop, it controls the game playing (window2). When it monitors game over, it stops and display window3. This will be our to-do list. We will recall it several times later to check where we are. <br>
+Now, let's discuss details in each window. <br>
 
 ## window1: start window
-First, let's take a look of my start window:
+First, let's take a look of my start window:<br>
 ![window1: start window](fig3_startwindow.png) <br>
-This is the window initially jumps out when the player open the game. It has two messages centered on the black screen. Specifically, when the player press a key (except `ESC`), the game will jump to game playing window. 
-Here are my code for making the start window:
+This is the window initially jumps out when the player open the game. It has two messages centered on the black screen. Specifically, when the player press a key (except `ESC`), the game will jump to game playing window. Here are my code for making the start window:<br>
 ```
 windowSurface.fill(BACKGROUNDCOLOR)
 drawText('Welcome to the Snake!', font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery-50)
@@ -200,7 +198,7 @@ waitForPlayerToPressKey()
 - `pygame.display.update()` tells the pygame to refresh the screen because we have added two new messages to the window. 
 - `waitForPlayerToPressKey()` runs the function we previously defined. Notice the second message asks the player to press a key to start the game. This message can have a reaction when player make an input. All the required reaction are written in the previous defined `waitForPlayerToPressKey()` function. We only need to run the function here. (See how convenient functions are!)
 
-That is everything we need for window1. Let's take a look for the pseudocode of the game structure, and check the things we have done:
+That is everything we need for window1. Let's take a look for the pseudocode of the game structure, and check the things we have done:<br>
 ```
 # window1
 Code for window1 (DONE!)
@@ -220,17 +218,17 @@ while True: # 1st loop
 
 ## window2: game playing window
 ![window2: game playing window](fig4_gameplayingwindow.png) <br>
-After the player press a key (except `ESC`), the start window jumps to the game playing window. This is the window we normally see when playing the snake game. Let's discuss what properties this window have:
+After the player press a key (except `ESC`), the start window jumps to the game playing window. This is the window we normally see when playing the snake game. Let's discuss what properties this window have:<br>
 1. It contains a "food" and a "snake". In my game, the food is a green square. The snake consists of 3 red squares. Initially, the snake is moving toward left. 
 2. When the player press direction buttons (left, right, up, down) or WASD buttons on keyboard, the snake can change the moving direction corresponded to the pressed key. 
 3. When the snake head touch the food, the food disappear, the snake add one square, and a new food appear at a random position on the screen. 
 4. When the snake touch the window edge, game over. 
 5. The program record the score during the game. When the snake eats a food, score+1. It can also keep a top score for all the games played. 
 
-Now, let's code to achieve these properties.
+Now, let's code to achieve these properties.<br>
 ### 1. Create the snake and the food. 
 #### 1.1 Create the snake.
-The snake is composed of 3 red squares. We can create 3 squares, and store their information (i.e. position, color, moving direction) in a list. Here are my code:
+The snake is composed of 3 red squares. We can create 3 squares, and store their information (i.e. position, color, moving direction) in a list. Here are my code:<br>
 ```
 snake = []
 snakeX = WINDOWWIDTH/2
@@ -247,11 +245,11 @@ direction = (-SPACESIZE, 0)
 - `direction = (-SPACESIZE, 0)` defines the inital moving direction of the snake. It creates the x- and y-coordinates of the snake position at next unit time. Pygame will update the window in a fixed speed. Let's say we want the snake to move left for 1 square unit (SPACESIZE) during 1 unit time. If the current position is (x=0,y=0), then after 1 unit time, the position is (x=-SPACESIZE, y=0). We assigned snake's next unit time position in `direction`. 
 
 #### 1.2 Create the food.
-The food is a green square. It can randomly appear on the screen. Here is my code:
+The food is a green square. It can randomly appear on the screen. Here is my code:<br>
 ```
 food = (random.randint(0,((WINDOWWIDTH//SPACESIZE)-1))*SPACESIZE, random.randint(0,((WINDOWHEIGHT//SPACESIZE)-1))*SPACESIZE)
 ```
-We stored x- and y-coordinates of the food in a tuple, and name the variable as `food`. Here we divide the window into a grid, with each cell as one square unit. This can help the food and the snake to align with each other.
+We stored x- and y-coordinates of the food in a tuple, and name the variable as `food`. Here we divide the window into a grid, with each cell as one square unit. This can help the food and the snake to align with each other.<br>
 - `random.randint(0,((WINDOWWIDTH//SPACESIZE)-1))*SPACESIZE` represents the x-cooridate. 
     - `WINDOWWIDTH//SPACESIZE` divides the total window width by the space size to determine how many possible positions exist along the x-axis. 
     - `-1` is to make sure the food not placed out of the border. 
@@ -260,7 +258,7 @@ We stored x- and y-coordinates of the food in a tuple, and name the variable as 
 - `random.randint(0,((WINDOWHEIGHT//SPACESIZE)-1))*SPACESIZE` represents the y-coordiate. It is the same defining logic as x-coordinate. 
 
 #### 1.3 Play game playing music
-We can also start music playing at this point. Here is my code:
+We can also start music playing at this point. Here is my code:<br>
 ```
 pygame.mixer.music.play(-1,0.0)
 ```
@@ -269,7 +267,7 @@ pygame.mixer.music.play(-1,0.0)
 - `0.0` is to start playing at 0.0 second. 
 
 ### 2. Define snake direction change
-The computer reacts according to the input key from the player. Here are my code:
+The computer reacts according to the input key from the player. Here are my code:<br>
 ```
 for event in pygame.event.get():
     if event.type == QUIT:
@@ -294,13 +292,13 @@ for event in pygame.event.get():
             if event.key == K_ESCAPE:
                 terminate()
   ```
-    This block of code has been seen in the function `waitForPlayerToPressKey()`. Yes, we have to make sure if the player click x button on the window, the program terminate. 
+    This block of code has been seen in the function `waitForPlayerToPressKey()`. Yes, we have to make sure if the player click x button on the window, the program terminate. <br>
 - We set both direction arrow buttons and WASD buttons to control the direction change. 
     - ```
         elif (event.key == K_LEFT or event.key == K_a) and direction != (SPACESIZE, 0):
             direction = (-SPACESIZE, 0)
       ```
-        If the player presses left button or A button, and meanwhile the current direction is not toward right (a snake moving right cannot go backward), we define the direction to be left. 
+        If the player presses left button or A button, and meanwhile the current direction is not toward right (a snake moving right cannot go backward), we define the direction to be left. <br>
     - ```
         elif (event.key == K_RIGHT or event.key == K_d) and direction != (-SPACESIZE, 0):
             direction = (SPACESIZE, 0)
@@ -309,22 +307,21 @@ for event in pygame.event.get():
         elif (event.key == K_DOWN or event.key == K_s) and direction != (0, -SPACESIZE):
             direction = (0, SPACESIZE)
       ```
-        Similar as the previous code block, to define direction change for right, up and down, respectively. 
+        Similar as the previous code block, to define direction change for right, up and down, respectively. <br>
 
 ### 3. Snake move and eat food
 #### 3.1 Snake move
-When the snake move 1 square unit left, it is equivalent to add a new square on the left of the current snake, and subtract the last square on the right end of the snake. Here are my code:
+When the snake move 1 square unit left, it is equivalent to add a new square on the left of the current snake, and subtract the last square on the right end of the snake. Here are my code:<br>
 ```
 new_head = (snake[0][0]+direction[0], snake[0][1]+direction[1])
 snake.insert(0, new_head)
 ```
 - `new_head = (snake[0][0]+direction[0], snake[0][1]+direction[1])` is to define the new square position. `snake[0][0]` is the x-coordinate value of the first square of the snake list, which is the current snake head. `+direction[0]` adds the direction for the x-axis. `snake[0][1]+direction[1]` represents y-coordinate and is similar as x-axis. We assign this position tuple to variable `new_head`. 
 - `snake.insert(0, new_head)` adds the `new_head` to the front of the snake list. 
-
-For removing the last square of the snake, we will write the code in the next sub-section: snake eat food. 
+For removing the last square of the snake, we will write the code in the next sub-section: snake eat food. <br>
 
 #### 3.2 Snake eat food
-Now let's see how I code when the snake head meets the food:
+Now let's see how I code when the snake head meets the food:<br>
 ```
 if new_head == food:
     food = (random.randint(0,((WINDOWWIDTH//SPACESIZE)-1))*SPACESIZE, random.randint(0,((WINDOWHEIGHT//SPACESIZE)-1))*SPACESIZE)
@@ -332,13 +329,13 @@ else:
     snake.pop()
 ```
 - `if new_head == food:`: When the snake head overlaps with the food, their x- and y-coordinates become the same. So we can write an `if` condition as `new_head == food`. 
-- When this condition is achieved, the program needs to do the following things:
+- When this condition is achieved, the program needs to do the following things:<br>
     1. the original food disappear
     2. a new food appears at a random position
     3. the snake add 1 square unit. 
-    For 1 and 2, we can assign a new random (x,y) value to the `food` variable. This will replace the original food position into the new one. My code is: `food = (random.randint(0,((WINDOWWIDTH//SPACESIZE)-1))*SPACESIZE, random.randint(0,((WINDOWHEIGHT//SPACESIZE)-1))*SPACESIZE)`. 
-    For 3, remember in **3.1**, we already add a new_head to the snake, which means the snake is already 1 unit longer than the original one. If it does eat the food, we just do nothing! 
-- But what if the snake does not meet the food? Then we need to subtract the last square in the snake list. My code is: 
+    For 1 and 2, we can assign a new random (x,y) value to the `food` variable. This will replace the original food position into the new one. My code is: `food = (random.randint(0,((WINDOWWIDTH//SPACESIZE)-1))*SPACESIZE, random.randint(0,((WINDOWHEIGHT//SPACESIZE)-1))*SPACESIZE)`. <br>
+    For 3, remember in **3.1**, we already add a new_head to the snake, which means the snake is already 1 unit longer than the original one. If it does eat the food, we just do nothing! <br>
+- But what if the snake does not meet the food? Then we need to subtract the last square in the snake list. My code is: <br>
     ```
     else:
         snake.pop()
@@ -347,7 +344,7 @@ else:
     - `snake.pop()` is to remove the last square in the snake list. 
 
 ### 4. Check collision
-When the snake touch the window border, game over. Here are my codes:
+When the snake touch the window border, game over. Here are my codes:<br>
 ```
 if new_head[0] < 0 or new_head[0] >= WINDOWWIDTH or new_head[1] < 0 or new_head[1] >= WINDOWHEIGHT or new_head in snake[1:]:
     break
@@ -356,7 +353,7 @@ if new_head[0] < 0 or new_head[0] >= WINDOWWIDTH or new_head[1] < 0 or new_head[
 - `break`: When the snake touch the border, we just call break, and the 2nd loop ends. Simple, right?
 
 ### 5. Record score
-We have 2 variables used for recording the scores: one is the current score, the othe is the top score. When the snake eats a food, current score adds 1 point; The top score represents the highest score for all the rounds played when the program is running. Here are my pseudocodes:
+We have 2 variables used for recording the scores: one is the current score, the othe is the top score. When the snake eats a food, current score adds 1 point; The top score represents the highest score for all the rounds played when the program is running. Here are my pseudocodes:<br>
 ```
 topScore = 0
 while True: # 1st while loop, for controling the program
@@ -384,12 +381,12 @@ while True: # 1st while loop, for controling the program
     if score > topScore:
         topScore = score
   ```
-    Inside the check collision code block, when the game over, if current score larger than topScore, update the new topScore. 
+    Inside the check collision code block, when the game over, if current score larger than topScore, update the new topScore. <br>
 
-Now we have 5 properties all set up for the game playing window! We have a moving snake, a food. The snake can eat the food, and snake dies when touch the borders. 
+Now we have 5 properties all set up for the game playing window! We have a moving snake, a food. The snake can eat the food, and snake dies when touch the borders. <br>
 
 ### Run window2 
-Now let's draw these elements onto the window and let the game running. Here are my code:
+Now let's draw these elements onto the window and let the game running. Here are my code:<br>
 ```
 # draw the game world on the window
 windowSurface.fill(BACKGROUNDCOLOR)
@@ -412,13 +409,13 @@ mainClock.tick(FPS)
     for bodypart in snake:
         pygame.draw.rect(windowSurface, SNAKECOLOR, (bodypart[0], bodypart[1], SPACESIZE, SPACESIZE))
   ```
-    Draws the snake on the window surface. Remember the snake is a list containing square units. So I use a for loop to draw these squares. 
+    Draws the snake on the window surface. Remember the snake is a list containing square units. So I use a for loop to draw these squares. <br>
     - `for bodypart in snake` takes each square by index in the snake list.
     - `pygame.draw.rect(windowSurface, SNAKECOLOR, (bodypart[0], bodypart[1], SPACESIZE, SPACESIZE))` draws the square on the window surface as a rectangle. The format is the same as we drawing the food in previous step. 
 - `pygame.display.flip()` refreshes the entire screen, making changes visible. 
 - `mainClock.tick(FPS)` controls screen update rate. 
 
-That is everything we need for window2. Let's recall the pseudocode of the game structure, and mark the things we have done:
+That is everything we need for window2. Let's recall the pseudocode of the game structure, and mark the things we have done:<br>
 ```
 # window1
 Code for window1 (DONE!)
@@ -438,15 +435,15 @@ while True: # 1st loop
 
 ## window3: Game over window
 ![window3: Game over window](fig5_gameoverwindow.png) <br>
-On window3, we can see the following properties:
+On window3, we can see the following properties:<br>
 1. The background is the dead screen from window2. 
 2. The game music changed to game over music. 
 3. There is a white semi-transparent rectangle in the middle. 
 4. 4 messages on the white rectangle. 
 
-Now let's code to achieve these properties:
+Now let's code to achieve these properties:<br>
 ### 1. Background is the dead screen from window2
-Since we are directly using the dead screen from window2, nothing needs to do for the background!
+Since we are directly using the dead screen from window2, nothing needs to do for the background!<br>
 
 ### 2. Change the music
 ```
@@ -480,27 +477,27 @@ drawText(f"Your Score: {score}", font, windowSurface, windowSurface.get_rect().c
 drawText(f"Top Score: {topScore}", font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery+20)
 drawText("Press a key to play again.", font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery+70)
 ```
-Basically, I use the previously defined function `drawText()` to display 4 messages. The input parameters are: 
+Basically, I use the previously defined function `drawText()` to display 4 messages. The input parameters are: <br>
     - message content
     - font type
     - surface to display
     - x-coordinate
     - y-coordinate
-I use a f-string to display variables such as score and topScore. 
+I use a f-string to display variables such as score and topScore. <br>
 
-Now, we update and displayed the window3 on the screen. Here are my code:
+Now, we update and displayed the window3 on the screen. Here are my code:<br>
 ```
 pygame.display.update()
 ```
 - `pygame.display.update()` refreshed the screen. 
 
-Notice the 4th message is to ask the player to press a key for starting a new round. To do that, we only need to call the function `waitForPlayerToPressKey()`. 
+Notice the 4th message is to ask the player to press a key for starting a new round. To do that, we only need to call the function `waitForPlayerToPressKey()`. <br>
 ```
 waitForPlayerToPressKey()
 ```
-Everything we needs are already defined in this function: if it is `ESC` key or click x button, 1st while loop stops and program terminate; if it is any other key, starts a new round. 
+Everything we needs are already defined in this function: if it is `ESC` key or click x button, 1st while loop stops and program terminate; if it is any other key, starts a new round. <br>
 
-That is everything we need for window3. Let's take a look for the pseudocode of the game structure, and check the things we have done:
+That is everything we need for window3. Let's take a look for the pseudocode of the game structure, and check the things we have done:<br>
 ```
 # window1
 Code for window1 (DONE!)
@@ -518,37 +515,37 @@ while True: # 1st loop
         break the 1st loop (DONE!)
 ```
 
-WoW! Everything is done! We make the Snake Game! 
-One last thing, we can add a line of code to stop the game over music at the end, to prevent the music continueous play after the program is terminated. 
+WoW! Everything is done! We make the Snake Game! <br>
+One last thing, we can add a line of code to stop the game over music at the end, to prevent the music continueous play after the program is terminated. <br>
 ```
 gameOverSound.stop()
 ```
 
 ## Run the program
-We can run the python script in terminal to play the game!
+We can run the python script in terminal to play the game!<br>
 ### Open a terminal window
-If using VS code, you can open a new Terminal window using the top bar: Terminal > New Terminal; or press control+shift+`. A new terminal window will appear on the bottom. 
+If using VS code, you can open a new Terminal window using the top bar: Terminal > New Terminal; or press control+shift+`. A new terminal window will appear on the bottom. <br>
 ### Go to the folder where contains the python script. 
-In the terminal window, run command: `cd /path_to_snake_folder/`
+In the terminal window, run command: `cd /path_to_snake_folder/` <br>
 
 ### Run the program.
-In the terminal window, run command: `python snake.py`
-We wait for several seconds, and will see a new window jumps out. This is the game window! Feel free to enjoy the snake game! 
+In the terminal window, run command: `python snake.py` <br>
+We wait for several seconds, and will see a new window jumps out. This is the game window! Feel free to enjoy the snake game! <br>
 
 ## conclusion
-This article introduces how to make a snake game using python. To sum up, it consists of these aspects:
+This article introduces how to make a snake game using python. To sum up, it consists of these aspects:<br>
 1. import essential packages (pygame, sys, random)
 2. set up variables and functions
 3. set up basic elements for the game (window, fonts, sound)
-4. set up 3 game windows: 
-    a. start window
-    b. game playing window
-    c. game over window
+4. set up 3 game windows: <br>
+    a. start window<br>
+    b. game playing window<br>
+    c. game over window<br>
 5. Run the program
 
 
-The full python script can be found [here](https://github.com/guoweier/GameHut/blob/main/snake/snake.py). 
+The full python script can be found [here](https://github.com/guoweier/GameHut/blob/main/snake/snake.py). <br>
 
-Hope you enjoy it! 
+Hope you enjoy it! <br>
 
 
