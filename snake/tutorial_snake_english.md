@@ -1,19 +1,19 @@
 # Programming Beginner: I make a Snake Game with Python! 
 
-My computer: Mac Pro
-Coding language: Python
-Coding software: VS code
-Coding package: pygame
-Complete game script: [click here](https://github.com/guoweier/GameHut/blob/main/snake/snake.py)
+My computer: Mac Pro<br>
+Coding language: Python<br>
+Coding software: VS code<br>
+Coding package: pygame<br>
+Complete game script: [click here](https://github.com/guoweier/GameHut/blob/main/snake/snake.py)<br>
 
 ## introduction to snake
-Snake is an action video game that is popular for many years. 
+Snake is an action video game that is popular for many years. <br>
 [Snake Game example](snakegameexample.webp)
-It is a simple to make, so I believe it can be a great practice for programming beginners like me. 
+It is a simple to make, so I believe it can be a great practice for programming beginners like me. <br>
 
 ## introduction to pygame package
-I decided to make the game in python, since I previously have a little experience on this programming language. 
-[Pygame](https://www.pygame.org/news) is my go-to package. Pygame is a python module designed for making video games. It contains graphics and sound libraries and specifically suitable for small games like snake. You can install pygame package from [here](https://www.pygame.org/wiki/GettingStarted). 
+I decided to make the game in python, since I previously have a little experience on this programming language. <br>
+[Pygame](https://www.pygame.org/news) is my go-to package. Pygame is a python module designed for making video games. It contains graphics and sound libraries and specifically suitable for small games like snake. You can install pygame package from [here](https://www.pygame.org/wiki/GettingStarted). <br>
 ### preparation
 **First, we create a folder and name it as "snake".**
 Later, all the python scripts, images, sounds will be stored in this folder. 
