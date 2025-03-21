@@ -4,11 +4,11 @@ My computer: Mac Pro
 Coding language: Python
 Coding software: VS code
 Coding package: pygame
-Complete game script: *github link*
+Complete game script: [click here](https://github.com/guoweier/GameHut/blob/main/snake/snake.py)
 
 ## introduction to snake
 Snake is an action video game that is popular for many years. 
-*snake game image*
+[Snake Game example](snakegameexample.webp)
 It is a simple to make, so I believe it can be a great practice for programming beginners like me. 
 
 ## introduction to pygame package
@@ -124,8 +124,7 @@ We will draw lots of text message on the game window during the programming. To 
 - `surface.blit(textobj, textrect)` draws `textobj` onto the `surface` at location `textrect`. 
 
 ### set up window, fonts, sound
-We start with setting up some initial parameters.
-***First, set up the window***
+We start with setting up some initial parameters. First, set up the game window. 
 Here are my code:
 ```
 pygame.init()
@@ -154,7 +153,7 @@ I would like to have two different music: one during the game playing, the other
 - `font = pygame.font.SysFont(None, 36)` creates font object. `None` means we have using the default system font. `36` is the font size. 
 
 We have finished initial parameters setting. Currently, these code will give us a window like this:
-*image of initial game setting*
+[Game window after initial setting](20250317_initialgameset.png)
 We will have a 600x600 black background window. The window title is Snake. 
 Now, let's start adding contents! 
 
@@ -185,7 +184,7 @@ Now, let's discuss details in each window.
 
 ## window1: start window
 First, let's take a look of my start window:
-*image of my start window*
+[window1: start window](20250317_startwindow.png)
 This is the window initially jumps out when the player open the game. It has two messages centered on the black screen. Specifically, when the player press a key (except `ESC`), the game will jump to game playing window. 
 Here are my code for making the start window:
 ```
@@ -220,7 +219,7 @@ while True: # 1st loop
 ```
 
 ## window2: game playing window
-*image of the game playing window*
+[window2: game playing window](20250317_gameplayingwindow.png)
 After the player press a key (except `ESC`), the start window jumps to the game playing window. This is the window we normally see when playing the snake game. Let's discuss what properties this window have:
 1. It contains a "food" and a "snake". In my game, the food is a green square. The snake consists of 3 red squares. Initially, the snake is moving toward left. 
 2. When the player press direction buttons (left, right, up, down) or WASD buttons on keyboard, the snake can change the moving direction corresponded to the pressed key. 
@@ -438,7 +437,7 @@ while True: # 1st loop
 ```
 
 ## window3: Game over window
-*image of the game over window*
+[window3: Game over window](20250320_gameoverwindow.png)
 On window3, we can see the following properties:
 1. The background is the dead screen from window2. 
 2. The game music changed to game over music. 
@@ -548,7 +547,7 @@ This article introduces how to make a snake game using python. To sum up, it con
 5. Run the program
 
 
-The full python script can be found [here](*github link*). 
+The full python script can be found [here](https://github.com/guoweier/GameHut/blob/main/snake/snake.py). 
 
 Hope you enjoy it! 
 
