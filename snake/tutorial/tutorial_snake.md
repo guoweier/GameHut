@@ -36,11 +36,12 @@ We need to import essential packages first. Here are my codes for pygame package
 2   from pygame.locals import *
 ```
 I import 3 packages: pygame, sys, random.<br>
-- `pygame` is the package for making snake. 
-- `sys` is the module provides access to variables and functions that interact with the computer interpreter. It is always available and no need for installation. 
-- `random` is the module for generating random numbers. We will use its functions when making food during the game. 
-Besides, I add a line as `from pygame.locals import *`. `pygame.locals` is the module contains many variables that we will use, such as `QUIT`, which helps to quit the program, and `K_ESCAPE`, which represents the `ESC` key on the keyboard. <br>
-I setup the pygame.locals as `*` when importing it. This can let me use `pygame.locals` without typing `pygame.locals` in front of every method, constant, or anything else call from the moduele. <br>
+- **Line 1**: <br>
+    - `pygame` is the package for making snake. 
+    - `sys` is the module provides access to variables and functions that interact with the computer interpreter. It is always available and no need for installation. 
+    - `random` is the module for generating random numbers. We will use its functions when making food during the game. 
+- **Line 2**: Besides, I add a line as `from pygame.locals import *`. `pygame.locals` is the module contains many variables that we will use, such as `QUIT`, which helps to quit the program, and `K_ESCAPE`, which represents the `ESC` key on the keyboard. I setup the pygame.locals as `*` when importing it. This can let me use `pygame.locals` without typing `pygame.locals` in front of every method, constant, or anything else call from the moduele. <br>
+
 Now, we are able to program the game. <br>
 
 ### Set up variables and functions
@@ -57,14 +58,14 @@ Here are my variables:<br>
 11  SNAKELENGTH = 3
 12  FOODCOLOR = (0,255,0)
 ```
-- **Line 4&5**: `WINDOWWIDTH` and `WINDOWHEIGHT` represent the width and height of the game window. Their units are pixels. I set them both to 600. 
+- **Line 4-5**: `WINDOWWIDTH` and `WINDOWHEIGHT` represent the width and height of the game window. Their units are pixels. I set them both to 600. 
 - **Line 6**: `TEXTCOLOR` represents the color of text displayed on the game window. Here I use RGB format to represent the color. I set the text color to be white. 
-- `BACKGROUNDCOLOR` represents the window's background color. I set it to be black.
-- `FPS` (frame per second) controls how fast the game updates. The animation of the game (i.e. the snake move around) is caused by the continueous updates of the window. To keep a consistent moving speed, we need FPS to maintain a fixed frame rate. Here I set it to be 10. 
-- `SPACESIZE` represents the snake and food unit length. In my game, the single unit of snake and food are squares. Food is a single square, snake is composed of several squares. I set the square unit length to be 25 pixels. 
-- `SNAKECOLOR` represents the snake color. I set it to be red. 
-- `SNAKELENGTH` indicates how many square unit of the snake at the start of the game. I set it to be 3. 
-- `FOODCOLOR` represents the food color. I set it to be green. 
+- **Line 7**: `BACKGROUNDCOLOR` represents the window's background color. I set it to be black.
+- **Line 8**: `FPS` (frame per second) controls how fast the game updates. The animation of the game (i.e. the snake move around) is caused by the continueous updates of the window. To keep a consistent moving speed, we need FPS to maintain a fixed frame rate. Here I set it to be 10. 
+- **Line 9**: `SPACESIZE` represents the snake and food unit length. In my game, the single unit of snake and food are squares. Food is a single square, snake is composed of several squares. I set the square unit length to be 25 pixels. 
+- **Line 10**: `SNAKECOLOR` represents the snake color. I set it to be red. 
+- **Line 11**: `SNAKELENGTH` indicates how many square unit of the snake at the start of the game. I set it to be 3. 
+- **Line 12**: `FOODCOLOR` represents the food color. I set it to be green. 
 
 Then here are my functions:<br>
 1. terminate()
@@ -74,82 +75,82 @@ Then here are my functions:<br>
 16      sys.exit()
 ```
 When the player decides to exit the game, we need to let the game stop, the game window disappears on the computer screen, and the program stop running. This process will be called several times in the script, so we can write them into a function. It is composed of 3 lines: <br>
-- `def terminate():` defines the function name
-- `pygame.quit()` close the game properly without it may leave system background processes running, which can be harmful for the computer. 
-- `sys.exit()` ensures the program fully exits after the pygame module stops. 
+- **Line 14**: `def terminate():` defines the function name
+- **Line 15**: `pygame.quit()` close the game properly without it may leave system background processes running, which can be harmful for the computer. 
+- **Line 16**: `sys.exit()` ensures the program fully exits after the pygame module stops. 
 
 2. waitForPlayerToPressKey()
 ```
-def waitForPlayerToPressKey():
-    while True:
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                terminate()
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE: 
-                    terminate()
-                return 
+18  def waitForPlayerToPressKey():
+19      while True:
+20          for event in pygame.event.get():
+21              if event.type == QUIT:
+22                  terminate()
+23              if event.type == KEYDOWN:
+24                  if event.key == K_ESCAPE: 
+25                      terminate()
+26                  return 
 ```
 During the game, player can press the key to let the game start, or directly exit the game. When player presses `ESC` key or click `x` button on the window, the game exit; otherwise, any other key pressing will lead to new game start. <br>
-- `def waitForPlayerToPressKey():` defines the function name, 
-- `while True` sets up a loop. This means the game can continuously monitor the player action. It is always looping until it receives the key the player entered. 
-- `for event in pygame.event.get():`: the `pygame.event.get()` checks for any new event objects (i.e. the player presses a key) generated and put them into a list. This line use a for loop to check every event object inside the list. 
--   ```
-    if event.type == QUIT:
-        terminate()
+- **Line 18**: `def waitForPlayerToPressKey():` defines the function name, 
+- **Line 19**: `while True` sets up a loop. This means the game can continuously monitor the player action. It is always looping until it receives the key the player entered. 
+- **Line 20**: `for event in pygame.event.get():`: the `pygame.event.get()` checks for any new event objects (i.e. the player presses a key) generated and put them into a list. This line use a for loop to check every event object inside the list. 
+- **Line 21-22**: <br>
     ```
-    Every event object has an attribute called `type`, which tells us the type of the event. When the `type` attribute of the event is equal to the constant variable `QUIT`, which means the player closes the window or the computer shuts down and try to close all the running programs, the script terminates. So we call the terminate() function we defined previously. 
--   ```
-    if event.type == KEYDOWN:
-        if event.key == K_ESCAPE: # pressing ESC quits
-            terminate()
+    21  if event.type == QUIT:
+    22      terminate()
     ```
-    When the `type` attribute of the event is equal to `KEYDOWN`, which means the player presses a key on the keyborad. When the pressed key equals to `K_ESCAPE`, which means the player presses `ESC`, the game needs to be terminated. 
-- `return` is to exit the `while True` loop. If the player pressed a key and it is not `K_ESCAPE`, we stop the `while True` loop and exit this function, and the program move on to the next step. 
+    Every event object has an attribute called `type`, which tells us the type of the event. When the `type` attribute of the event is equal to the constant variable `QUIT`, which means the player closes the window or the computer shuts down and try to close all the running programs, the script terminates. So we call the terminate() function we defined previously. <br>
+- **Line 23-25**: <br>
+    ```
+    23  if event.type == KEYDOWN:
+    24      if event.key == K_ESCAPE: # pressing ESC quits
+    25          terminate()
+    ```
+    When the `type` attribute of the event is equal to `KEYDOWN`, which means the player presses a key on the keyborad. When the pressed key equals to `K_ESCAPE`, which means the player presses `ESC`, the game needs to be terminated. <br>
+- **Line 26**: `return` is to exit the `while True` loop. If the player pressed a key and it is not `K_ESCAPE`, we stop the `while True` loop and exit this function, and the program move on to the next step. 
 
 3. drawText()
 ```
-def drawText(text, font, surface, x, y):
-    textobj = font.render(text, 1, TEXTCOLOR)
-    textrect = textobj.get_rect()
-    textrect.centerx = x
-    textrect.centery = y
-    surface.blit(textobj, textrect)
+28  def drawText(text, font, surface, x, y):
+29      textobj = font.render(text, 1, TEXTCOLOR)
+30      textrect = textobj.get_rect()
+31      textrect.centerx = x
+32      textrect.centery = y
+33      surface.blit(textobj, textrect)
 ```
 We will draw lots of text message on the game window during the programming. To do that, we needs to define several parameters such as where the text locates on the window, what the color of the text, etc. So we write them into a function to prevent repetitive typing. <br>
-- `def drawText(text, font, surface, x, y):` defines the function name. This function have several parameters to input. `text` is the message needs to display. `font` is the text font. `surface` represents which surface the text needs to write on. `x` and `y` are the coordinates represent where the text will be written. 
-- `textobj = font.render(text, 1, TEXTCOLOR)` creates a text surface, which can be drawn onto the screen. Some variables are used: `text` is the message needs to display. `1` represents smooth text. `TEXTCOLOR` is the variable we previously defined. We assigned the output to an object named `textobj`. 
-- `textrect = textobj.get_rect()` is to create a rectangular area around the text. This can help to define the position and alignment of text when we draw it onto the screen. We assigned the output to `textrect`. 
-- `textrect.centerx = x` and `textrect.centery = y` assign `x` and `y` to the center location of generated text rectangle. We want the text to be centered on the screen, so we defined their center location at the begninning. 
-- `surface.blit(textobj, textrect)` draws `textobj` onto the `surface` at location `textrect`. 
+- **Line 28**: `def drawText(text, font, surface, x, y):` defines the function name. This function have several parameters to input. `text` is the message needs to display. `font` is the text font. `surface` represents which surface the text needs to write on. `x` and `y` are the coordinates represent where the text will be written. 
+- **Line 29**: `textobj = font.render(text, 1, TEXTCOLOR)` creates a text surface, which can be drawn onto the screen. Some variables are used: `text` is the message needs to display. `1` represents smooth text. `TEXTCOLOR` is the variable we previously defined. We assigned the output to an object named `textobj`. 
+- **Line 30**: `textrect = textobj.get_rect()` is to create a rectangular area around the text. This can help to define the position and alignment of text when we draw it onto the screen. We assigned the output to `textrect`. 
+- **Line 31-32**: `textrect.centerx = x` and `textrect.centery = y` assign `x` and `y` to the center location of generated text rectangle. We want the text to be centered on the screen, so we defined their center location at the begninning. 
+- **Line 33**: `surface.blit(textobj, textrect)` draws `textobj` onto the `surface` at location `textrect`. 
 
 ### Set up window, fonts, sound
-We start with setting up some initial parameters. First, set up the game window. Here are my code:
+We start with setting up some initial parameters. First, set up the game window. Here are my code: <br>
 ```
-pygame.init()
-mainClock = pygame.time.Clock()
-windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
-pygame.display.set_caption('Snake')
-pygame.mouse.set_visible(False)
+36  pygame.init()
+37  mainClock = pygame.time.Clock()
+38  windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
+39  pygame.display.set_caption('Snake')
+40  pygame.mouse.set_visible(False)
 ```
-- `pygame.init()` needs to be called for every pygame program. It always called just after importing `pygame` module and before any `pygame` functions. It includes some very basic functions such as `pygame.display`, which can manage game window, and `pygame.mixer`, which can handle music. 
-- `mainClock = pygame.time.Clock()` can help ensure smooth animation and prevent the game running too fast. Snake game contains a snake that can move automatically in every unit time. This line of code is set up to control the speed of the snake. 
-- `windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))` sets up the window. This is the window our game will be. The window width and height are the variables defined before. 
-- `pygame.display.set_caption('Snake')` sets the window title to 'Snake'. 
-- `pygame.mouse.set_visible(False)` sets the mouse cursor to be invisible during the game. 
+- **Line 36**: `pygame.init()` needs to be called for every pygame program. It always called just after importing `pygame` module and before any `pygame` functions. It includes some very basic functions such as `pygame.display`, which can manage game window, and `pygame.mixer`, which can handle music. 
+- **Line 37**: `mainClock = pygame.time.Clock()` can help ensure smooth animation and prevent the game running too fast. Snake game contains a snake that can move automatically in every unit time. This line of code is set up to control the speed of the snake. 
+- **Line 38**: `windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))` sets up the window. This is the window our game will be. The window width and height are the variables defined before. 
+- **Line 39**: `pygame.display.set_caption('Snake')` sets the window title to 'Snake'. 
+- **Line 40**: `pygame.mouse.set_visible(False)` sets the mouse cursor to be invisible during the game. 
 
 Next, I set up sounds and font for the game. <br>
 ```
-# sound
-gameOverSound = pygame.mixer.Sound('gameover.mp3')
-pygame.mixer.music.load('Soundbackground_CasaRosa.mp3')
-# font
-font = pygame.font.SysFont(None, 36)
+43  gameOverSound = pygame.mixer.Sound('gameover.mp3')
+44  pygame.mixer.music.load('Soundbackground_CasaRosa.mp3')
+47  font = pygame.font.SysFont(None, 36)
 ```
 I would like to have two different music: one during the game playing, the other for the game over window. I save the music in the same folder of this python script. <br>
-- `gameOverSound = pygame.mixer.Sound('gameover.mp3')` loads the gameover.mp3 music. 
-- `pygame.mixer.music.load('Soundbackground_CasaRosa.mp3')` loads the background music Soundbackground_CasaRosa.mp3. 
-- `font = pygame.font.SysFont(None, 36)` creates font object. `None` means we have using the default system font. `36` is the font size. 
+- **Line 43**: `gameOverSound = pygame.mixer.Sound('gameover.mp3')` loads the gameover.mp3 music. 
+- **Line 44**: `pygame.mixer.music.load('Soundbackground_CasaRosa.mp3')` loads the background music Soundbackground_CasaRosa.mp3. 
+- **Line 47**: `font = pygame.font.SysFont(None, 36)` creates font object. `None` means we have using the default system font. `36` is the font size. 
 
 We have finished initial parameters setting. Currently, these code will give us a window like this:<br>
 ![Game window after initial setting](fig2_initialgameset.png) <br>
@@ -157,27 +158,27 @@ We will have a 600x600 black background window. The window title is Snake. <br>
 Now, let's start adding contents! <br>
 
 I designed 3 windows for my snake game:<br>
-1. window1: Start window
-2. window2: Game playing window
-3. window3: Game over window
+**1. window1: Start window**
+**2. window2: Game playing window**
+**3. window3: Game over window**
 
 Here are my pseudocode for arranging 3 windows:<br>
-```
-# window1
-Code for window1
-while True: # 1st loop
-    # window2
+
+***#window1***
+***Code for window1***
+***while True: # 1st loop***
+    #window2
     code for window2 initialization
     while True: # 2nd loop
         code for window2 reactions during the game
         break the 2nd loop if game over
-    # window3
+    #window3
     code for window3
     if the player start a new round:
         continue 1st loop
     elif the player terminate the program:
         break the 1st loop
-```
+
 I set up two while loops for game running. The 1st loop controls the program, when it stops, the program terminates. The 2nd loop is nested inside the first loop, it controls the game playing (window2). When it monitors game over, it stops and display window3. This will be our to-do list. We will recall it several times later to check where we are. <br>
 Now, let's discuss details in each window. <br>
 
