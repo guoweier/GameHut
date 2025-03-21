@@ -6,31 +6,31 @@ Coding software: VS code<br>
 Coding package: pygame<br>
 Complete game script: [click here](https://github.com/guoweier/GameHut/blob/main/snake/snake.py)<br>
 
-## introduction to snake
+## Introduction to snake game
 Snake is an action video game that is popular for many years. <br>
-![Snake Game example](snakegameexample.webp)
+![Snake Game example](fig1_snakegameexample.webp) <br>
 It is a simple to make, so I believe it can be a great practice for programming beginners like me. <br>
 
-## introduction to pygame package
+## Introduction to pygame package
 I decided to make the game in python, since I previously have a little experience on this programming language. <br>
 [Pygame](https://www.pygame.org/news) is my go-to package. Pygame is a python module designed for making video games. It contains graphics and sound libraries and specifically suitable for small games like snake. You can install pygame package from [here](https://www.pygame.org/wiki/GettingStarted). <br>
-### preparation
-**First, we create a folder and name it as "snake".**
-Later, all the python scripts, images, sounds will be stored in this folder. 
-**Second, inside this folder, we create a file and name it as "snake.py".**
-I use VS code for programming. Any type of files can be created directly inside this software. Other text editing softwares are all fine. VS code can be downloaded [here](https://code.visualstudio.com/download). 
-**Third, we open snake.py file in the VS code main window and start adding code.**
-Here are the main blocks of my python script:
+### Preparation
+#### First, we create a folder and name it as "snake".
+Later, all the python scripts, images, sounds will be stored in this folder. <br>
+#### Second, inside this folder, we create a file and name it as "snake.py".
+I use VS code for programming. Any type of files can be created directly inside this software. Other text editing softwares are all fine. VS code can be downloaded [here](https://code.visualstudio.com/download). <br>
+#### Third, we open snake.py file in the VS code main window and start adding code.
+Here are the main blocks of my python script:<br>
 1. import essential packages
 2. set up variables and functions
 3. set up basic elements for the game (window, fonts, sound)
-4. set up 3 windows:
-    a. start window
-    b. game playing window
-    c. game over window
+4. set up 3 windows:<br>
+    a. start window<br>
+    b. game playing window<br>
+    c. game over window<br>
 
 ### import essential package
-We need to import essential packages first. Here are my codes for pygame package import:
+We need to import essential packages first. Here are my codes for pygame package import:<br>
 ```
 import pygame, sys, random
 from pygame.locals import *
@@ -153,7 +153,7 @@ I would like to have two different music: one during the game playing, the other
 - `font = pygame.font.SysFont(None, 36)` creates font object. `None` means we have using the default system font. `36` is the font size. 
 
 We have finished initial parameters setting. Currently, these code will give us a window like this:
-![Game window after initial setting](20250317_initialgameset.png)
+![Game window after initial setting](fig2_initialgameset.png)
 We will have a 600x600 black background window. The window title is Snake. 
 Now, let's start adding contents! 
 
@@ -184,7 +184,7 @@ Now, let's discuss details in each window.
 
 ## window1: start window
 First, let's take a look of my start window:
-![window1: start window](20250317_startwindow.png)
+![window1: start window](fig3_startwindow.png)
 This is the window initially jumps out when the player open the game. It has two messages centered on the black screen. Specifically, when the player press a key (except `ESC`), the game will jump to game playing window. 
 Here are my code for making the start window:
 ```
@@ -219,7 +219,7 @@ while True: # 1st loop
 ```
 
 ## window2: game playing window
-![window2: game playing window](20250317_gameplayingwindow.png)
+![window2: game playing window](fig4_gameplayingwindow.png)
 After the player press a key (except `ESC`), the start window jumps to the game playing window. This is the window we normally see when playing the snake game. Let's discuss what properties this window have:
 1. It contains a "food" and a "snake". In my game, the food is a green square. The snake consists of 3 red squares. Initially, the snake is moving toward left. 
 2. When the player press direction buttons (left, right, up, down) or WASD buttons on keyboard, the snake can change the moving direction corresponded to the pressed key. 
@@ -437,7 +437,7 @@ while True: # 1st loop
 ```
 
 ## window3: Game over window
-![window3: Game over window](20250320_gameoverwindow.png)
+![window3: Game over window](fig5_gameoverwindow.png)
 On window3, we can see the following properties:
 1. The background is the dead screen from window2. 
 2. The game music changed to game over music. 
