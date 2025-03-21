@@ -489,6 +489,7 @@ Basically, I use the previously defined function `drawText()` to display 4 messa
 - surface to display<br>
 - x-coordinate<br>
 - y-coordinate<br>
+
 I use a f-string to display variables such as score and topScore. <br>
 
 Now, we update and displayed the window3 on the screen. Here are my code:<br>
