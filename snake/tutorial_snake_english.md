@@ -153,7 +153,7 @@ I would like to have two different music: one during the game playing, the other
 - `font = pygame.font.SysFont(None, 36)` creates font object. `None` means we have using the default system font. `36` is the font size. 
 
 We have finished initial parameters setting. Currently, these code will give us a window like this:
-![Game window after initial setting](fig2_initialgameset.png)
+![Game window after initial setting](fig2_initialgameset.png) <br>
 We will have a 600x600 black background window. The window title is Snake. 
 Now, let's start adding contents! 
 
@@ -184,7 +184,7 @@ Now, let's discuss details in each window.
 
 ## window1: start window
 First, let's take a look of my start window:
-![window1: start window](fig3_startwindow.png)
+![window1: start window](fig3_startwindow.png) <br>
 This is the window initially jumps out when the player open the game. It has two messages centered on the black screen. Specifically, when the player press a key (except `ESC`), the game will jump to game playing window. 
 Here are my code for making the start window:
 ```
@@ -219,7 +219,7 @@ while True: # 1st loop
 ```
 
 ## window2: game playing window
-![window2: game playing window](fig4_gameplayingwindow.png)
+![window2: game playing window](fig4_gameplayingwindow.png) <br>
 After the player press a key (except `ESC`), the start window jumps to the game playing window. This is the window we normally see when playing the snake game. Let's discuss what properties this window have:
 1. It contains a "food" and a "snake". In my game, the food is a green square. The snake consists of 3 red squares. Initially, the snake is moving toward left. 
 2. When the player press direction buttons (left, right, up, down) or WASD buttons on keyboard, the snake can change the moving direction corresponded to the pressed key. 
@@ -437,7 +437,7 @@ while True: # 1st loop
 ```
 
 ## window3: Game over window
-![window3: Game over window](fig5_gameoverwindow.png)
+![window3: Game over window](fig5_gameoverwindow.png) <br>
 On window3, we can see the following properties:
 1. The background is the dead screen from window2. 
 2. The game music changed to game over music. 
