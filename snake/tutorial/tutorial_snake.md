@@ -8,7 +8,7 @@ Complete game script: [click here](https://github.com/guoweier/GameHut/blob/main
 
 ## Introduction to snake game
 Snake is an action video game that is popular for many years. <br>
-![Snake Game example](fig1_snakegameexample.webp) <br>
+![Snake Game example](fig1_snakegameexample.jpg) <br>
 It is a simple to make, so I believe it can be a great practice for programming beginners like me. <br>
 
 ## Introduction to pygame package

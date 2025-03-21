@@ -1,16 +1,16 @@
 # 编程菜鸟：我用Python写了一个贪吃蛇游戏！
 
-我的电脑： Mac Pro
-我使用的编程语言：Python
-我使用的编程软件：VS code
-我使用的游戏制作模块：pygame
-详细的代码逐行解析：*link for tutorial*
-完整的代码：*github link*
+我的电脑： **Mac Pro**<br>
+我使用的编程语言：**Python**<br>
+我使用的编程软件：**VS code**<br>
+我使用的游戏制作模块：**pygame**<br>
+详细的代码逐行解析：[点击这里](https://github.com/guoweier/GameHut/blob/main/snake/tutorial/tutorial_snake.md)<br>
+完整的代码：[点击这里](https://github.com/guoweier/GameHut/blob/main/snake/snake.py)<br>
 
 
 作为一个编程初学者，我一直想用学到的知识写一点有意义的程序。之前学概念的时候，看着满屏的数据结构就头晕，再看着那些练习题，跟我的生活毫不相关，就更头晕了。
 想来想去觉得只有玩游戏才是我的快乐。于是我决定用学到的编程知识写一个小游戏。一开始就简单一点，就从贪吃蛇开始吧。
-*snake game image*
+![Snake Game example](fig1_snakegameexample.webp) <br>
 
 编程语言：由于我只会python，所以就用python来写。
 编程软件：浏览了一些网上的推荐，选定了VS code。我自己试用之后，体验不错。它自带terminal窗口，可以边写边测试。有疑似bug会自动提醒。从GitHub上传或者下载文件都很方便。其他高级的功能咱也不会。对于我来讲已经很足够了。
