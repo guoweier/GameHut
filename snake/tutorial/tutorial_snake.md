@@ -484,11 +484,11 @@ Since we are directly using the dead screen from window2, nothing needs to do fo
 130 drawText("Press a key to play again.", font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery+70)
 ```
 Basically, I use the previously defined function `drawText()` to display 4 messages. The input parameters are: <br>
-    - message content
-    - font type
-    - surface to display
-    - x-coordinate
-    - y-coordinate
+    - message content <br>
+    - font type<br>
+    - surface to display<br>
+    - x-coordinate<br>
+    - y-coordinate<br>
 I use a f-string to display variables such as score and topScore. <br>
 
 Now, we update and displayed the window3 on the screen. Here are my code:<br>
