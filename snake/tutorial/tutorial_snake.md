@@ -158,15 +158,14 @@ We will have a 600x600 black background window. The window title is Snake. <br>
 Now, let's start adding contents! <br>
 
 I designed 3 windows for my snake game:<br>
-**1. window1: Start window**<br>
-**2. window2: Game playing window**<br>
-**3. window3: Game over window**<br>
-
+1. window1: Start window
+2. window2: Game playing window
+3. window3: Game over window
 Here are my pseudocode for arranging 3 windows:<br>
-
-***#window1***<br>
-***Code for window1***<br>
-***while True: # 1st loop***<br>
+```
+#window1
+Code for window1
+while True: # 1st loop
     #window2
     code for window2 initialization
     while True: # 2nd loop
@@ -178,7 +177,7 @@ Here are my pseudocode for arranging 3 windows:<br>
         continue 1st loop
     elif the player terminate the program:
         break the 1st loop
-
+```
 I set up two while loops for game running. The 1st loop controls the program, when it stops, the program terminates. The 2nd loop is nested inside the first loop, it controls the game playing (window2). When it monitors game over, it stops and display window3. This will be our to-do list. We will recall it several times later to check where we are. <br>
 Now, let's discuss details in each window. <br>
 
@@ -187,17 +186,17 @@ First, let's take a look of my start window:<br>
 ![window1: start window](fig3_startwindow.png) <br>
 This is the window initially jumps out when the player open the game. It has two messages centered on the black screen. Specifically, when the player press a key (except `ESC`), the game will jump to game playing window. Here are my code for making the start window:<br>
 ```
-windowSurface.fill(BACKGROUNDCOLOR)
-drawText('Welcome to the Snake!', font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery-50)
-drawText('Press a key to start.', font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery)
-pygame.display.update()
-waitForPlayerToPressKey()
+50  windowSurface.fill(BACKGROUNDCOLOR)
+51  drawText('Welcome to the Snake!', font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery-50)
+52  drawText('Press a key to start.', font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery)
+53  pygame.display.update()
+54  waitForPlayerToPressKey()
 ```
-- `windowSurface.fill(BACKGROUNDCOLOR)` fills the window with `BACKGROUNDCOLOR`, which is black, as we defined before. 
-- `drawText('Welcome to the Snake!', font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery-50)` uses previously defined `drawText()` function to write the first message. We input necessary parameters into the function. Notice the `x` and `y` are `windowSurface.get_rect().centerx` and `windowSurface.get_rect().centery-50` respectively. Remember we assigned `x` and `y` as the center location of the text. Since we want the text to be centered on the screen, here the input `x` and `y` should be the center of the game window. So we set the whole window into a rectangular object and take its centerx and centery. I would like the first message to be slightly above the vertical center, so I minus 50 pixels for centery. 
-- `drawText('Press a key to start.', font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery)` is similar as the previous code line. 
-- `pygame.display.update()` tells the pygame to refresh the screen because we have added two new messages to the window. 
-- `waitForPlayerToPressKey()` runs the function we previously defined. Notice the second message asks the player to press a key to start the game. This message can have a reaction when player make an input. All the required reaction are written in the previous defined `waitForPlayerToPressKey()` function. We only need to run the function here. (See how convenient functions are!)
+- **Line 50**: `windowSurface.fill(BACKGROUNDCOLOR)` fills the window with `BACKGROUNDCOLOR`, which is black, as we defined before. 
+- **Line 51**: `drawText('Welcome to the Snake!', font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery-50)` uses previously defined `drawText()` function to write the first message. We input necessary parameters into the function. Notice the `x` and `y` are `windowSurface.get_rect().centerx` and `windowSurface.get_rect().centery-50` respectively. Remember we assigned `x` and `y` as the center location of the text. Since we want the text to be centered on the screen, here the input `x` and `y` should be the center of the game window. So we set the whole window into a rectangular object and take its centerx and centery. I would like the first message to be slightly above the vertical center, so I minus 50 pixels for centery. 
+- **Line 52**: `drawText('Press a key to start.', font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery)` is similar as the previous code line. 
+- **Line 53**: `pygame.display.update()` tells the pygame to refresh the screen because we have added two new messages to the window. 
+- **Line 54**: `waitForPlayerToPressKey()` runs the function we previously defined. Notice the second message asks the player to press a key to start the game. This message can have a reaction when player make an input. All the required reaction are written in the previous defined `waitForPlayerToPressKey()` function. We only need to run the function here. (See how convenient functions are!)
 
 That is everything we need for window1. Let's take a look for the pseudocode of the game structure, and check the things we have done:<br>
 ```
@@ -231,157 +230,162 @@ Now, let's code to achieve these properties.<br>
 #### 1.1 Create the snake.
 The snake is composed of 3 red squares. We can create 3 squares, and store their information (i.e. position, color, moving direction) in a list. Here are my code:<br>
 ```
-snake = []
-snakeX = WINDOWWIDTH/2
-snakeY = WINDOWHEIGHT/2
-for i in range(SNAKELENGTH):
-    snake.append((snakeX+i*SPACESIZE, snakeY))
-direction = (-SPACESIZE, 0)
+62  snake = []
+63  snakeX = WINDOWWIDTH/2
+64  snakeY = WINDOWHEIGHT/2
+65  for i in range(SNAKELENGTH):
+66      snake.append((snakeX+i*SPACESIZE, snakeY))
+67  direction = (-SPACESIZE, 0)
 ```
-- `snake = []` sets an empty list and names it as snake. This list will store 3 squares information later.
-- `snakeX = WINDOWWIDTH/2` and `snakeY = WINDOWHEIGHT/2` define the initial positions for snake. Here I set them to appear in the center of the window. 
-- Next, I use a for loop to create squares and add them into the snake list. 
-    - `for i in range(SNAKELENGTH):` starts the for loop. `SNAKELENGTH` is previously defined, which is 3 and represents 3 body units(squares). `range(SNAKELENGTH)` creates a sequence of numbers from 0 to SNAKELENGTH-1, which is [0,1,2]. So this loop will run `SNAKELENGTH` (3) times, using `i` as the index. 
-    - `snake.append((snakeX+i*SPACESIZE, snakeY))` adds created squares into the snake list. Each square information is stored in a tuple `(snakeX+i*SPACESIZE, snakeY)`, where `snakeX+i*SPACESIZE` and `snakeY` represent the i-th square's positions on the x and y coordinates, respectively. `snakeX+i*SPACESIZE` offsets each square by a fixed amount (SPACESIZE). `snakeY` keeps all squares on the same y-coordiate. For example, if i=0, which is the first square, then x = snakeX+0\*SPACESIZE = WINDOWWIDTH/2, y = snakeY = WINDOWHEIGHT/2. If i=1, which is the second square, then x = snakeX+1\*SPACESIZE = WINDOWWIDTH/2+SPACESIZE, y = WINDOWHEIGHT/2. What we see on the screen is two squares next to each other. After this for loop, the snake list will have 3 tuples, each tuple carries the x- and y-coordinates of 1 square, and these 3 squares should display next to each other into a horizontal order when draw them on the screen later. 
-- `direction = (-SPACESIZE, 0)` defines the inital moving direction of the snake. It creates the x- and y-coordinates of the snake position at next unit time. Pygame will update the window in a fixed speed. Let's say we want the snake to move left for 1 square unit (SPACESIZE) during 1 unit time. If the current position is (x=0,y=0), then after 1 unit time, the position is (x=-SPACESIZE, y=0). We assigned snake's next unit time position in `direction`. 
+- **Line 62**: `snake = []` sets an empty list and names it as snake. This list will store 3 squares information later.
+- **Line 63-64**: `snakeX = WINDOWWIDTH/2` and `snakeY = WINDOWHEIGHT/2` define the initial positions for snake. Here I set them to appear in the center of the window. 
+- **Line 65-66**: Next, I use a for loop to create squares and add them into the snake list. 
+    - **Line 65**: `for i in range(SNAKELENGTH):` starts the for loop. `SNAKELENGTH` is previously defined, which is 3 and represents 3 body units(squares). `range(SNAKELENGTH)` creates a sequence of numbers from 0 to SNAKELENGTH-1, which is [0,1,2]. So this loop will run `SNAKELENGTH` (3) times, using `i` as the index. 
+    - **Line 66**: `snake.append((snakeX+i*SPACESIZE, snakeY))` adds created squares into the snake list. Each square information is stored in a tuple `(snakeX+i*SPACESIZE, snakeY)`, where `snakeX+i*SPACESIZE` and `snakeY` represent the i-th square's positions on the x and y coordinates, respectively. `snakeX+i*SPACESIZE` offsets each square by a fixed amount (SPACESIZE). `snakeY` keeps all squares on the same y-coordiate. For example, if i=0, which is the first square, then x = snakeX+0\*SPACESIZE = WINDOWWIDTH/2, y = snakeY = WINDOWHEIGHT/2. If i=1, which is the second square, then x = snakeX+1\*SPACESIZE = WINDOWWIDTH/2+SPACESIZE, y = WINDOWHEIGHT/2. What we see on the screen is two squares next to each other. After this for loop, the snake list will have 3 tuples, each tuple carries the x- and y-coordinates of 1 square, and these 3 squares should display next to each other into a horizontal order when draw them on the screen later. 
+- **Line 67**: `direction = (-SPACESIZE, 0)` defines the inital moving direction of the snake. It creates the x- and y-coordinates of the snake position at next unit time. Pygame will update the window in a fixed speed. Let's say we want the snake to move left for 1 square unit (SPACESIZE) during 1 unit time. If the current position is (x=0,y=0), then after 1 unit time, the position is (x=-SPACESIZE, y=0). We assigned snake's next unit time position in `direction`. 
 
 #### 1.2 Create the food.
 The food is a green square. It can randomly appear on the screen. Here is my code:<br>
 ```
-food = (random.randint(0,((WINDOWWIDTH//SPACESIZE)-1))*SPACESIZE, random.randint(0,((WINDOWHEIGHT//SPACESIZE)-1))*SPACESIZE)
+69  food = (random.randint(0,((WINDOWWIDTH//SPACESIZE)-1))*SPACESIZE, random.randint(0,((WINDOWHEIGHT//SPACESIZE)-1))*SPACESIZE)
 ```
 We stored x- and y-coordinates of the food in a tuple, and name the variable as `food`. Here we divide the window into a grid, with each cell as one square unit. This can help the food and the snake to align with each other.<br>
-- `random.randint(0,((WINDOWWIDTH//SPACESIZE)-1))*SPACESIZE` represents the x-cooridate. 
+- **Line 69**: `random.randint(0,((WINDOWWIDTH//SPACESIZE)-1))*SPACESIZE` represents the x-cooridate. 
     - `WINDOWWIDTH//SPACESIZE` divides the total window width by the space size to determine how many possible positions exist along the x-axis. 
     - `-1` is to make sure the food not placed out of the border. 
     - `random.randint(0,((WINDOWWIDTH//SPACESIZE)-1))` takes a random integer from 0 to the largest x-axis position.
     - `*SPACESIZE` converts the grid index back to actual pixel value. 
-- `random.randint(0,((WINDOWHEIGHT//SPACESIZE)-1))*SPACESIZE` represents the y-coordiate. It is the same defining logic as x-coordinate. 
+- **Line 69**: `random.randint(0,((WINDOWHEIGHT//SPACESIZE)-1))*SPACESIZE` represents the y-coordiate. It is the same defining logic as x-coordinate. 
 
 #### 1.3 Play game playing music
 We can also start music playing at this point. Here is my code:<br>
 ```
-pygame.mixer.music.play(-1,0.0)
+70  pygame.mixer.music.play(-1,0.0)
 ```
-- `pygame.mixer.music.play` is to start playing loaded music. 
-- `-1` is to loop the music forever.
-- `0.0` is to start playing at 0.0 second. 
+- **Line 70**: <br>
+    - `pygame.mixer.music.play` is to start playing loaded music. 
+    - `-1` is to loop the music forever.
+    - `0.0` is to start playing at 0.0 second. 
 
 ### 2. Define snake direction change
 The computer reacts according to the input key from the player. Here are my code:<br>
 ```
-for event in pygame.event.get():
-    if event.type == QUIT:
-        terminate()
-    elif event.type == KEYDOWN:
-        if event.key == K_ESCAPE:
-            terminate()
-        elif (event.key == K_LEFT or event.key == K_a) and direction != (SPACESIZE, 0):
-            direction = (-SPACESIZE, 0)
-        elif (event.key == K_RIGHT or event.key == K_d) and direction != (-SPACESIZE, 0):
-            direction = (SPACESIZE, 0)
-        elif (event.key == K_UP or event.key == K_w) and direction != (0, SPACESIZE):
-            direction = (0, -SPACESIZE)
-        elif (event.key == K_DOWN or event.key == K_s) and direction != (0, -SPACESIZE):
-            direction = (0, SPACESIZE)
+73  for event in pygame.event.get():
+74      if event.type == QUIT:
+75          terminate()
+76      elif event.type == KEYDOWN:
+77          if event.key == K_ESCAPE:
+78              terminate()
+79          elif (event.key == K_LEFT or event.key == K_a) and direction != (SPACESIZE, 0):
+80              direction = (-SPACESIZE, 0)
+81          elif (event.key == K_RIGHT or event.key == K_d) and direction != (-SPACESIZE, 0):
+82              direction = (SPACESIZE, 0)
+83          elif (event.key == K_UP or event.key == K_w) and direction != (0, SPACESIZE):
+84              direction = (0, -SPACESIZE)
+85          elif (event.key == K_DOWN or event.key == K_s) and direction != (0, -SPACESIZE):
+86              direction = (0, SPACESIZE)
 ```
-- ```
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            terminate()
-        elif event.type == KEYDOWN:
-            if event.key == K_ESCAPE:
-                terminate()
-  ```
+- **Line 73-78**:
+    ```
+    73  for event in pygame.event.get():
+    74      if event.type == QUIT:
+    75          terminate()
+    76      elif event.type == KEYDOWN:
+    77          if event.key == K_ESCAPE:
+    78              terminate()
+    ```
     This block of code has been seen in the function `waitForPlayerToPressKey()`. Yes, we have to make sure if the player click x button on the window, the program terminate. <br>
 - We set both direction arrow buttons and WASD buttons to control the direction change. 
-    - ```
-        elif (event.key == K_LEFT or event.key == K_a) and direction != (SPACESIZE, 0):
-            direction = (-SPACESIZE, 0)
-      ```
+    - **Line 79-80**:
+        ```
+        79  elif (event.key == K_LEFT or event.key == K_a) and direction != (SPACESIZE, 0):
+        80      direction = (-SPACESIZE, 0)
+        ```
         If the player presses left button or A button, and meanwhile the current direction is not toward right (a snake moving right cannot go backward), we define the direction to be left. <br>
-    - ```
-        elif (event.key == K_RIGHT or event.key == K_d) and direction != (-SPACESIZE, 0):
-            direction = (SPACESIZE, 0)
-        elif (event.key == K_UP or event.key == K_w) and direction != (0, SPACESIZE):
-            direction = (0, -SPACESIZE)
-        elif (event.key == K_DOWN or event.key == K_s) and direction != (0, -SPACESIZE):
-            direction = (0, SPACESIZE)
-      ```
+    - **Line 81-86**:
+        ```
+        81  elif (event.key == K_RIGHT or event.key == K_d) and direction != (-SPACESIZE, 0):
+        82      direction = (SPACESIZE, 0)
+        83  elif (event.key == K_UP or event.key == K_w) and direction != (0, SPACESIZE):
+        84      direction = (0, -SPACESIZE)
+        85  elif (event.key == K_DOWN or event.key == K_s) and direction != (0, -SPACESIZE):
+        86      direction = (0, SPACESIZE)
+        ```
         Similar as the previous code block, to define direction change for right, up and down, respectively. <br>
 
 ### 3. Snake move and eat food
 #### 3.1 Snake move
 When the snake move 1 square unit left, it is equivalent to add a new square on the left of the current snake, and subtract the last square on the right end of the snake. Here are my code:<br>
 ```
-new_head = (snake[0][0]+direction[0], snake[0][1]+direction[1])
-snake.insert(0, new_head)
+90  new_head = (snake[0][0]+direction[0], snake[0][1]+direction[1])
+91  snake.insert(0, new_head)
 ```
-- `new_head = (snake[0][0]+direction[0], snake[0][1]+direction[1])` is to define the new square position. `snake[0][0]` is the x-coordinate value of the first square of the snake list, which is the current snake head. `+direction[0]` adds the direction for the x-axis. `snake[0][1]+direction[1]` represents y-coordinate and is similar as x-axis. We assign this position tuple to variable `new_head`. 
-- `snake.insert(0, new_head)` adds the `new_head` to the front of the snake list. 
+- **Line 90**: `new_head = (snake[0][0]+direction[0], snake[0][1]+direction[1])` is to define the new square position. `snake[0][0]` is the x-coordinate value of the first square of the snake list, which is the current snake head. `+direction[0]` adds the direction for the x-axis. `snake[0][1]+direction[1]` represents y-coordinate and is similar as x-axis. We assign this position tuple to variable `new_head`. 
+- **Line 91**: `snake.insert(0, new_head)` adds the `new_head` to the front of the snake list. 
 For removing the last square of the snake, we will write the code in the next sub-section: snake eat food. <br>
 
 #### 3.2 Snake eat food
 Now let's see how I code when the snake head meets the food:<br>
 ```
-if new_head == food:
-    food = (random.randint(0,((WINDOWWIDTH//SPACESIZE)-1))*SPACESIZE, random.randint(0,((WINDOWHEIGHT//SPACESIZE)-1))*SPACESIZE)
-else:
-    snake.pop()
+94  if new_head == food:
+95      food = (random.randint(0,((WINDOWWIDTH//SPACESIZE)-1))*SPACESIZE, random.randint(0,((WINDOWHEIGHT//SPACESIZE)-1))*SPACESIZE)
+97  else:
+98      snake.pop()
 ```
-- `if new_head == food:`: When the snake head overlaps with the food, their x- and y-coordinates become the same. So we can write an `if` condition as `new_head == food`. 
-- When this condition is achieved, the program needs to do the following things:<br>
+- **Line 94**: `if new_head == food:`: When the snake head overlaps with the food, their x- and y-coordinates become the same. So we can write an `if` condition as `new_head == food`. 
+- **Line 95**: When this condition is achieved, the program needs to do the following things:<br>
     1. the original food disappear
     2. a new food appears at a random position
     3. the snake add 1 square unit. 
     For 1 and 2, we can assign a new random (x,y) value to the `food` variable. This will replace the original food position into the new one. My code is: `food = (random.randint(0,((WINDOWWIDTH//SPACESIZE)-1))*SPACESIZE, random.randint(0,((WINDOWHEIGHT//SPACESIZE)-1))*SPACESIZE)`. <br>
     For 3, remember in **3.1**, we already add a new_head to the snake, which means the snake is already 1 unit longer than the original one. If it does eat the food, we just do nothing! <br>
-- But what if the snake does not meet the food? Then we need to subtract the last square in the snake list. My code is: <br>
+- **Line 97-98**: But what if the snake does not meet the food? Then we need to subtract the last square in the snake list. My code is: <br>
     ```
-    else:
-        snake.pop()
+    97  else:
+    98      snake.pop()
     ```
-    - `else:` means new_head does not equal to food position. 
-    - `snake.pop()` is to remove the last square in the snake list. 
+    - **Line 97**: `else:` means new_head does not equal to food position. 
+    - **Line 98**: `snake.pop()` is to remove the last square in the snake list. 
 
 ### 4. Check collision
 When the snake touch the window border, game over. Here are my codes:<br>
 ```
-if new_head[0] < 0 or new_head[0] >= WINDOWWIDTH or new_head[1] < 0 or new_head[1] >= WINDOWHEIGHT or new_head in snake[1:]:
-    break
+100 if new_head[0] < 0 or new_head[0] >= WINDOWWIDTH or new_head[1] < 0 or new_head[1] >= WINDOWHEIGHT or new_head in snake[1:]:
+103     break
 ```
-- When the snake touch left window border, it's head's x-coordinate is smaller than 0, so `new_head[0] < 0`. When touch right border, it;s x-coordinate is larger than `WINDOWWIDTH`, so `new_head[0] >= WINDOWWIDTH`. It is similar for touching top and bottom borders, where is the comparison been y-coordinate and the `WINDOWHEIGHT`. So, we can connect these 4 conditions into one code line: `if new_head[0] < 0 or new_head[0] >= WINDOWWIDTH or new_head[1] < 0 or new_head[1] >= WINDOWHEIGHT or new_head in snake[1:]:`, meaning either one of these 4 conditions are fulfilled, game over. 
-- `break`: When the snake touch the border, we just call break, and the 2nd loop ends. Simple, right?
+- **Line 100**: When the snake touch left window border, it's head's x-coordinate is smaller than 0, so `new_head[0] < 0`. When touch right border, it;s x-coordinate is larger than `WINDOWWIDTH`, so `new_head[0] >= WINDOWWIDTH`. It is similar for touching top and bottom borders, where is the comparison been y-coordinate and the `WINDOWHEIGHT`. So, we can connect these 4 conditions into one code line: `if new_head[0] < 0 or new_head[0] >= WINDOWWIDTH or new_head[1] < 0 or new_head[1] >= WINDOWHEIGHT or new_head in snake[1:]:`, meaning either one of these 4 conditions are fulfilled, game over. 
+- **Line 103**: `break`: When the snake touch the border, we just call break, and the 2nd loop ends. Simple, right?
 
 ### 5. Record score
 We have 2 variables used for recording the scores: one is the current score, the othe is the top score. When the snake eats a food, current score adds 1 point; The top score represents the highest score for all the rounds played when the program is running. Here are my pseudocodes:<br>
 ```
-topScore = 0
-while True: # 1st while loop, for controling the program
-    score = 0
-    # initialized snake and food
-    while True: # 2nd while loop, for monitoring the game playing 
-        # direction change
-        # snake move
-        # snake eat food
-        if new_head == food:
-            food = (random.randint(0,((WINDOWWIDTH//SPACESIZE)-1))*SPACESIZE, random.randint(0,((WINDOWHEIGHT//SPACESIZE)-1))*SPACESIZE)
-            score += 1
-        # check collision
-        if new_head[0] < 0 or new_head[0] >= WINDOWWIDTH or new_head[1] < 0 or new_head[1] >= WINDOWHEIGHT or new_head in snake[1:]:
-            if score > topScore:
-                topScore = score
-            break
-    # display game over window (window3)
-    # if the player stop the program, break the 1st loop, close the program. 
+57  topScore = 0
+58  while True: # 1st while loop, for controling the program
+59      score = 0
+        # initialized snake and food
+        while True: # 2nd while loop, for monitoring the game playing 
+            # direction change
+            # snake move
+            # snake eat food
+94          if new_head == food:
+95              food = (random.randint(0,((WINDOWWIDTH//SPACESIZE)-1))*SPACESIZE, random.randint(0,((WINDOWHEIGHT//SPACESIZE)-1))*SPACESIZE)
+96              score += 1
+            # check collision
+100          if new_head[0] < 0 or new_head[0] >= WINDOWWIDTH or new_head[1] < 0 or new_head[1] >= WINDOWHEIGHT or new_head in snake[1:]:
+101              if score > topScore:
+102                  topScore = score
+103           break
+        # display game over window (window3)
+        # if the player stop the program, break the 1st loop, close the program. 
 ```
-- `topScore = 0` variable sets up before the 1st while loop starts. 
-- `score = 0` represents the current score for every game round. It sets up inside the 1st while loop and before the 2nd while loop. 
-- `score += 1`: Inside the snake eat food code block, when then snake eats a food, score adds 1 point. 
-- ```
-    if score > topScore:
-        topScore = score
-  ```
+- **Line 57**: `topScore = 0` variable sets up before the 1st while loop starts. 
+- **Line 59**: `score = 0` represents the current score for every game round. It sets up inside the 1st while loop and before the 2nd while loop. 
+- **Line 96**: `score += 1`: Inside the snake eat food code block, when then snake eats a food, score adds 1 point. 
+- **Line 101-102**: <br>
+    ```
+    101 if score > topScore:
+    102     topScore = score
+    ```
     Inside the check collision code block, when the game over, if current score larger than topScore, update the new topScore. <br>
 
 Now we have 5 properties all set up for the game playing window! We have a moving snake, a food. The snake can eat the food, and snake dies when touch the borders. <br>
@@ -389,32 +393,33 @@ Now we have 5 properties all set up for the game playing window! We have a movin
 ### Run window2 
 Now let's draw these elements onto the window and let the game running. Here are my code:<br>
 ```
-# draw the game world on the window
-windowSurface.fill(BACKGROUNDCOLOR)
-# draw food
-pygame.draw.rect(windowSurface, FOODCOLOR, (food[0], food[1], SPACESIZE, SPACESIZE))
-# draw snake
-for bodypart in snake:
-    pygame.draw.rect(windowSurface, SNAKECOLOR, (bodypart[0], bodypart[1], SPACESIZE, SPACESIZE))
-# update window2
-pygame.display.flip()
-mainClock.tick(FPS)
+105 # draw the game world on the window
+106 windowSurface.fill(BACKGROUNDCOLOR)
+107 # draw food
+108 pygame.draw.rect(windowSurface, FOODCOLOR, (food[0], food[1], SPACESIZE, SPACESIZE))
+109 # draw snake
+110 for bodypart in snake:
+111     pygame.draw.rect(windowSurface, SNAKECOLOR, (bodypart[0], bodypart[1], SPACESIZE, SPACESIZE))
+112 # update window2
+113 pygame.display.flip()
+114 mainClock.tick(FPS)
 ```
-- `windowSurface.fill(BACKGROUNDCOLOR)` fill the window with black background. 
-- `pygame.draw.rect(windowSurface, FOODCOLOR, (food[0], food[1], SPACESIZE, SPACESIZE))` draws the food as a rectangle on the window surface. 
+- **Line 106**: `windowSurface.fill(BACKGROUNDCOLOR)` fill the window with black background. 
+- **Line 108**: `pygame.draw.rect(windowSurface, FOODCOLOR, (food[0], food[1], SPACESIZE, SPACESIZE))` draws the food as a rectangle on the window surface. 
     - `pygame.draw.rect()` draw the rectangle
     - `windowSurface` is the surface where rectangle will draw
     - `FOODCOLOR` is the color of the food. 
     - `(food[0], food[1], SPACESIZE, SPACESIZE)` represents the position (x,y) and the size (width, height) of the food. 
-- ```
+- **Line 110-111**:
+    ```
     for bodypart in snake:
         pygame.draw.rect(windowSurface, SNAKECOLOR, (bodypart[0], bodypart[1], SPACESIZE, SPACESIZE))
-  ```
+    ```
     Draws the snake on the window surface. Remember the snake is a list containing square units. So I use a for loop to draw these squares. <br>
-    - `for bodypart in snake` takes each square by index in the snake list.
-    - `pygame.draw.rect(windowSurface, SNAKECOLOR, (bodypart[0], bodypart[1], SPACESIZE, SPACESIZE))` draws the square on the window surface as a rectangle. The format is the same as we drawing the food in previous step. 
-- `pygame.display.flip()` refreshes the entire screen, making changes visible. 
-- `mainClock.tick(FPS)` controls screen update rate. 
+    - **Line 110**: `for bodypart in snake` takes each square by index in the snake list.
+    - **Line 111**: `pygame.draw.rect(windowSurface, SNAKECOLOR, (bodypart[0], bodypart[1], SPACESIZE, SPACESIZE))` draws the square on the window surface as a rectangle. The format is the same as we drawing the food in previous step. 
+- **Line 113**: `pygame.display.flip()` refreshes the entire screen, making changes visible. 
+- **Line 114**: `mainClock.tick(FPS)` controls screen update rate. 
 
 That is everything we need for window2. Let's recall the pseudocode of the game structure, and mark the things we have done:<br>
 ```
@@ -448,35 +453,35 @@ Since we are directly using the dead screen from window2, nothing needs to do fo
 
 ### 2. Change the music
 ```
-pygame.mixer.music.stop()
-gameOverSound.play()
+117 pygame.mixer.music.stop()
+118 gameOverSound.play()
 ```
-- `pygame.mixer.music.stop()` stops the music that is currently playing.
-- `gameOverSound.play()` plays the gameOverSound. 
+- **Line 117**: `pygame.mixer.music.stop()` stops the music that is currently playing.
+- **Line 118**: `gameOverSound.play()` plays the gameOverSound. 
 
 ### 3. Add a white semi-transparent rectangle
 ```
-transparent_surface = pygame.Surface((400,300))
-transparent_surface.fill((255, 255, 255))
-transparent_surface.set_alpha(70)
-surface = transparent_surface.get_rect()
-surface.centerx = windowSurface.get_rect().centerx
-surface.centery = windowSurface.get_rect().centery
-windowSurface.blit(transparent_surface, surface)
+120 transparent_surface = pygame.Surface((400,300))
+121 transparent_surface.fill((255, 255, 255))
+122 transparent_surface.set_alpha(70)
+123 surface = transparent_surface.get_rect()
+124 surface.centerx = windowSurface.get_rect().centerx
+125 surface.centery = windowSurface.get_rect().centery
+126 windowSurface.blit(transparent_surface, surface)
 ```
-- `transparent_surface = pygame.Surface((400,300))` sets up a surface with width=400 and height=300 and name it as `transparent_surface`. 
-- `transparent_surface.fill((255, 255, 255))` sets the color to be white. 
-- `transparent_surface.set_alpha(70)` sets the transparency to be 70%.
-- `surface = transparent_surface.get_rect()` creates a rectangular area around the `transparent_surface`. This will help define the alignment and position of the object. 
-- `surface.centerx = windowSurface.get_rect().centerx` and `surface.centery = windowSurface.get_rect().centery` set up x- and y-coordinates of the transparent rectangle. It will let the rectangle centered on the window. 
-- `windowSurface.blit(transparent_surface, surface)` draws `transparent_surface` onto the `windowSurface` at location `surface`.
+- **Line 120**: `transparent_surface = pygame.Surface((400,300))` sets up a surface with width=400 and height=300 and name it as `transparent_surface`. 
+- **Line 121**: `transparent_surface.fill((255, 255, 255))` sets the color to be white. 
+- **Line 122**: `transparent_surface.set_alpha(70)` sets the transparency to be 70%.
+- **Line 123**: `surface = transparent_surface.get_rect()` creates a rectangular area around the `transparent_surface`. This will help define the alignment and position of the object. 
+- **Line 124-125**: `surface.centerx = windowSurface.get_rect().centerx` and `surface.centery = windowSurface.get_rect().centery` set up x- and y-coordinates of the transparent rectangle. It will let the rectangle centered on the window. 
+- **Line 126**: `windowSurface.blit(transparent_surface, surface)` draws `transparent_surface` onto the `windowSurface` at location `surface`.
 
 ### 4. Display 4 messages
 ```
-drawText("GAME OVER", font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery-80)
-drawText(f"Your Score: {score}", font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery-30)
-drawText(f"Top Score: {topScore}", font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery+20)
-drawText("Press a key to play again.", font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery+70)
+127 drawText("GAME OVER", font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery-80)
+128 drawText(f"Your Score: {score}", font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery-30)
+129 drawText(f"Top Score: {topScore}", font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery+20)
+130 drawText("Press a key to play again.", font, windowSurface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery+70)
 ```
 Basically, I use the previously defined function `drawText()` to display 4 messages. The input parameters are: <br>
     - message content
@@ -488,13 +493,13 @@ I use a f-string to display variables such as score and topScore. <br>
 
 Now, we update and displayed the window3 on the screen. Here are my code:<br>
 ```
-pygame.display.update()
+131 pygame.display.update()
 ```
-- `pygame.display.update()` refreshed the screen. 
+- **Line 131**: `pygame.display.update()` refreshed the screen. 
 
 Notice the 4th message is to ask the player to press a key for starting a new round. To do that, we only need to call the function `waitForPlayerToPressKey()`. <br>
 ```
-waitForPlayerToPressKey()
+132 waitForPlayerToPressKey()
 ```
 Everything we needs are already defined in this function: if it is `ESC` key or click x button, 1st while loop stops and program terminate; if it is any other key, starts a new round. <br>
 
@@ -519,7 +524,7 @@ while True: # 1st loop
 WoW! Everything is done! We make the Snake Game! <br>
 One last thing, we can add a line of code to stop the game over music at the end, to prevent the music continueous play after the program is terminated. <br>
 ```
-gameOverSound.stop()
+133 gameOverSound.stop()
 ```
 
 ## Run the program
