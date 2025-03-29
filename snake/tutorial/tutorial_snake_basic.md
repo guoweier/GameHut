@@ -8,7 +8,7 @@ Complete game script: [click here](https://github.com/guoweier/GameHut/blob/main
 
 ## Introduction to snake game
 Snake is an action video game that is popular for many years. <br>
-![Snake Game example](fig1_snakegameexample.jpg) <br>
+![Snake Game example](tutorial_image/fig1_snakegameexample.jpg) <br>
 It is a simple to make, so I believe it can be a great practice for programming beginners like me. <br>
 
 ## Introduction to pygame package
@@ -153,7 +153,7 @@ I would like to have two different music: one during the game playing, the other
 - **Line 47**: `font = pygame.font.SysFont(None, 36)` creates font object. `None` means we have using the default system font. `36` is the font size. 
 
 We have finished initial parameters setting. Currently, these code will give us a window like this:<br>
-![Game window after initial setting](fig2_initialgameset.png) <br>
+![Game window after initial setting](tutorial_image/fig2_initialgameset.png) <br>
 We will have a 600x600 black background window. The window title is Snake. <br>
 Now, let's start adding contents! <br>
 
@@ -183,7 +183,7 @@ Now, let's discuss details in each window. <br>
 
 ## window1: start window
 First, let's take a look of my start window:<br>
-![window1: start window](fig3_startwindow.png) <br>
+![window1: start window](tutorial_image/3_startwindow.png) <br>
 This is the window initially jumps out when the player open the game. It has two messages centered on the black screen. Specifically, when the player press a key (except `ESC`), the game will jump to game playing window. Here are my code for making the start window:<br>
 ```
 50  windowSurface.fill(BACKGROUNDCOLOR)
@@ -217,7 +217,7 @@ while True: # 1st loop
 ```
 
 ## window2: game playing window
-![window2: game playing window](fig4_gameplayingwindow.png) <br>
+![window2: game playing window](tutorial_image/fig4_gameplayingwindow.png) <br>
 After the player press a key (except `ESC`), the start window jumps to the game playing window. This is the window we normally see when playing the snake game. Let's discuss what properties this window have:<br>
 1. It contains a "food" and a "snake". In my game, the food is a green square. The snake consists of 3 red squares. Initially, the snake is moving toward left. 
 2. When the player press direction buttons (left, right, up, down) or WASD buttons on keyboard, the snake can change the moving direction corresponded to the pressed key. 
@@ -440,7 +440,7 @@ while True: # 1st loop
 ```
 
 ## window3: Game over window
-![window3: Game over window](fig5_gameoverwindow.png) <br>
+![window3: Game over window](tutorial_image/fig5_gameoverwindow.png) <br>
 On window3, we can see the following properties:<br>
 1. The background is the dead screen from window2. 
 2. The game music changed to game over music. 
