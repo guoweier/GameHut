@@ -4,7 +4,7 @@ My computer: Mac Pro<br>
 Coding language: Python<br>
 Coding software: VS code<br>
 Coding package: pygame<br>
-Complete source code: [click here]()<br>
+Complete source code: [click here](https://github.com/guoweier/GameHut/blob/main/snake/snake_v2.py)<br>
 
 Last time, I made a snake game using pygame. <br>
 ![Figure 1. snake v1 (basic)](tutorial_image/v2_Fig1.png)<br>
@@ -15,7 +15,7 @@ What a big difference!<br>
 I use google snake game as the reference. Now, let me introduce how I did that. 
 
 ## Review for snake v1
-Before we start, let's have a quick review of what we've done in snake v1. (Detailed [tutorial](tutorial_snake_v1.md) and [source code]())<br>
+Before we start, let's have a quick review of what we've done in snake v1. (Detailed [tutorial](tutorial_snake_v1.md) and [source code](https://github.com/guoweier/GameHut/blob/main/snake/snake_v1.py))<br>
 In snake v1, we have 3 windows:<br>
 1. start window
     - welcome message
@@ -628,5 +628,5 @@ while True: # 1st loop
         code for window3
 ```
 
-The complete source code can be found [here]() <br>
+The complete source code can be found [here](https://github.com/guoweier/GameHut/blob/main/snake/snake_v2.py) <br>
 Hope you enjoy it! <br>
