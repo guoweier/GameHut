@@ -4,7 +4,7 @@ My computer: Mac Pro<br>
 Coding language: Python<br>
 Coding software: VS code<br>
 Coding package: pygame<br>
-Complete game script: [click here](https://github.com/guoweier/GameHut/blob/main/snake/snake.py)<br>
+Complete game script: [click here](https://github.com/guoweier/GameHut/blob/main/snake/snake_basic.py)<br>
 
 ## Introduction to snake game
 Snake is an action video game that is popular for many years. <br>
@@ -551,7 +551,7 @@ This article introduces how to make a snake game using python. To sum up, it con
 5. Run the program
 
 
-The full python script can be found [here](https://github.com/guoweier/GameHut/blob/main/snake/snake.py). <br>
+The full python script can be found [here](https://github.com/guoweier/GameHut/blob/main/snake/snake_basic.py). <br>
 
 Hope you enjoy it! <br>
 

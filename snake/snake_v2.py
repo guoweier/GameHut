@@ -15,6 +15,7 @@ TEXTCOLOR = (255,255,255)
 FPS = 10
 SPACESIZE = 30
 SNAKELENGTH = 3
+topScore = 0
 
 # set up pygame, the window
 pygame.init()
@@ -84,7 +85,7 @@ def rotate_image(direction, image):
         image_rt = pygame.transform.rotate(image, 180)
     elif direction == (0, -SPACESIZE): # up
         image_rt = pygame.transform.rotate(image, -90)
-    elif direction == (0, SPACESIZE): # up
+    elif direction == (0, SPACESIZE): # down
         image_rt = pygame.transform.rotate(image, 90)
     return image_rt
 
@@ -140,22 +141,13 @@ def add_collision_snaketail(snake):
     dx, dy = tx-tpx, ty-tpy
     if dx == 0 and dy == SPACESIZE: # bottom
         newtail_pos = (tx, ty+SPACESIZE)
-        newtail_img = pygame.transform.rotate(snaketail_img, 90)
-        oldtail_img = snakebody_ver_img
     elif dx == 0 and dy == -SPACESIZE: # top
         newtail_pos = (tx, ty-SPACESIZE)
-        newtail_img = pygame.transform.rotate(snaketail_img, -90)
-        oldtail_img = snakebody_ver_img
     elif dx == -SPACESIZE and dy == 0: # left
         newtail_pos = (tx-SPACESIZE, ty)
-        newtail_img = pygame.transform.rotate(snaketail_img, 0)
-        oldtail_img = snakebody_hor_img
     elif dx == SPACESIZE and dy == 0: # right
         newtail_pos = (tx+SPACESIZE, ty)
-        newtail_img = pygame.transform.rotate(snaketail_img, 180)
-        oldtail_img = snakebody_hor_img
-    oldtail_pos = (tx,ty)
-    return (newtail_img, newtail_pos, oldtail_img, oldtail_pos)
+    return newtail_pos
 
 def draw_snakebody(surface):
     for i in range(1, len(snake)-1):
@@ -209,7 +201,7 @@ def create_gameover_statics():
     draw_image(board_shadow, surface, windowSurface.get_rect().centerx+5, windowSurface.get_rect().centery+5)
     draw_image(scoreboard_img, surface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery)
     draw_text(f"{score}", font, surface, windowSurface.get_rect().centerx-100, windowSurface.get_rect().centery-60)
-    draw_text(f"{score}", font, surface, windowSurface.get_rect().centerx+100, windowSurface.get_rect().centery-60)
+    draw_text(f"{topScore}", font, surface, windowSurface.get_rect().centerx+100, windowSurface.get_rect().centery-60)
     draw_text("Press ENTER to play again.", font, surface, windowSurface.get_rect().centerx, windowSurface.get_rect().centery+110)
     return surface
 
@@ -218,8 +210,8 @@ def show_gameover_screen():
     gameOverSound.play()
 
     snake.pop(0)
-    tails = add_collision_snaketail(snake)
-    snake.append(tails[1])
+    tail_pos = add_collision_snaketail(snake)
+    snake.append(tail_pos)
 
     statics = create_gameover_statics()
     
@@ -280,7 +272,6 @@ pygame.display.update()
 start_game()
 
 ## GAME LOOP ##
-topScore = 0
 while True:
     gameover = False
     score = 0
