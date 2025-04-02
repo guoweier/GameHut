@@ -40,8 +40,8 @@ pygame.display.set_caption('Snake')
 pygame.mouse.set_visible(False)
 
 # set up sounds
-gameOverSound = pygame.mixer.Sound('gameover.mp3')
-pygame.mixer.music.load('Soundbackground_CasaRosa.mp3')
+gameOverSound = pygame.mixer.Sound('music/gameover.mp3')
+pygame.mixer.music.load('music/Soundbackground_CasaRosa.mp3')
 
 # set up the fonts
 font = pygame.font.SysFont(None, 36)
