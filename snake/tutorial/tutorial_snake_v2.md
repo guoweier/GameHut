@@ -1,4 +1,4 @@
-# Programming Learning Report #2: How I made snake game from basic to advance?
+# Programming Learning Report #2: How I made snake game from scratch to advance?
 
 My computer: Mac Pro<br>
 Coding language: Python<br>
@@ -32,7 +32,7 @@ while True: # 1st loop
     # window2
     code for window2 initialization
     while True: # 2nd loop
-        code for window2 reactions during the game
+        code for window2 animations during the game
         break the 2nd loop if game over
     # window3
     code for window3
@@ -619,7 +619,7 @@ while True: # 1st loop
     # window2
     code for window2 initialization
     while startwindow3==False: # 2nd loop
-        code for window2 reactions during the game
+        code for window2 animations during the game
         if game over:
             startwindow3 = True
             break the 2nd loop

@@ -169,7 +169,7 @@ while True: # 1st loop
     #window2
     code for window2 initialization
     while True: # 2nd loop
-        code for window2 reactions during the game
+        code for window2 animations during the game
         break the 2nd loop if game over
     #window3
     code for window3
