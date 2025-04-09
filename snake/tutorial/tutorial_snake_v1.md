@@ -183,7 +183,7 @@ Now, let's discuss details in each window. <br>
 
 ## window1: start window
 First, let's take a look of my start window:<br>
-![window1: start window](tutorial_image/3_startwindow.png) <br>
+![window1: start window](tutorial_image/fig_startwindow.png) <br>
 This is the window initially jumps out when the player open the game. It has two messages centered on the black screen. Specifically, when the player press a key (except `ESC`), the game will jump to game playing window. Here are my code for making the start window:<br>
 ```
 50  windowSurface.fill(BACKGROUNDCOLOR)
