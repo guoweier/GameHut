@@ -1,4 +1,4 @@
-# Programming Learning Project #1: How I made snake game from scratch to advance?
+# Programming Learning Project #1: I made a snake game from scratch
 
 Computer: **Mac Pro**<br>
 Programming Language: **Python**<br>
@@ -95,7 +95,7 @@ First, let's see v1 and v2 differences window by window.
     | Content      | v1                   | v2                             |
     |------------|--------------------------|--------------------------|
     | snake      | no animation             | blink eyes                         |
-    | scoreboard | while semi-transparent rectangle, show 4 messages | designed scoreboard image |
+    | scoreboard | white semi-transparent rectangle, show 4 messages | designed scoreboard image |
 
 Next, let's see how I achieve these changes. 
 ### window1: start window

@@ -17,7 +17,7 @@ For my snake game, I separate it into 3 windows:
 1. window1: start window, where the player will see a welcome message. 
 2. window2: game playing window, which is the main window that we are familiar with. It has a snake, a food, and the snake can move around and eat the food. 
 3. window3: gameover window, which is when the snake touch the border and died, it shows a scoreboard, and asked if the player want to start a new game. 
-*scene3&2: half screen windows image, half screen me with the white board*
+*scene3&2: half screen of each window images, half screen me with the white board*
 And I want my 3 windows to run like this:
 - When starts the game, it shows window1. 
 - When the player press ENTER key, it starts window2, and the snake game starts running. 
