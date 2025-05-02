@@ -38,7 +38,7 @@ Generally, I designed 2 `while` loops for the program:
 ## window1 (start window)
 ![Figure1. window1]()<br>
 ![Figure2. Table of window1 elements]()<br>
-winodw1 is designated for setting up variables, such as the window size, color, texts, etc. 
+window1 is designated for setting up variables, such as the window size, color, texts, etc. 
 
 ## window2 (game playing window)
 ![Figure3. window2]()<br>
