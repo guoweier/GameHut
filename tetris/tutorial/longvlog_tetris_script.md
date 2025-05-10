@@ -13,9 +13,9 @@ First, let's take a look of my tetris game.
 *video of tetris game window123*
 
 *scene1&2: half whiteboard, half computer screen*
-As we can see, there are 3 different windows:
+There are 3 different windows in my tetris game:
 1. window1: start window. It contains welcome messages. 
-2. window2: game playing window. It is the main window of the game. One the left it is the gameboard, where tetrominoes fall down and stack. On the right it has blocks for next tetromino preview and score box. 
+2. window2: game playing window. It is the main platform of the game. One the left it is the gameboard, where tetrominoes fall down and stack. On the right it has blocks for next tetromino preview and score box. 
 3. window3: gameover window. It displays a scoreboard on the left, and asked if the player want to start again. 
 
 *scene1: flow-chart for window running process*
