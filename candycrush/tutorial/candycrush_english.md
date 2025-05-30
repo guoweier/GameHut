@@ -93,8 +93,6 @@ If no match is found, `animate_swap()` is used to swap the candies back to their
 
 3-5. Eliminate matched candies + drop candies from above to fill empty spaces + randomly generate new candies to fill the board
 ![Figure9. examples of step3-5]()<br>
-步骤3-5是一个反复监测，反复运行的过程。即，当匹配糖果消除后，自动进入下一轮监测（find_matches()）。若新生成的游戏框再次出现大于等于3个糖果排成一线，则需要再次执行“消除糖果+上方糖果下落填充+随机生成新糖果填满”的连续步骤。这个连续动作会不断循环，直至没有匹配的糖果。
-因此，为了实现这个连续步骤，我设计了resolve_gameboard()这个function，将步骤3-5嵌套于其中。具体的代码框架如下：
 Steps 3-5 form a repeating loop. That is, once matched candies are eliminated, the game automatically enters the next round of dtection using `find_matches()`. 
 If the newly updated board again contains three or more aligned candies, the sequence of "eliminate + drop + generate" must be executed again. This sequence continues to loop unitl no more matches are found. 
 To implement this continuous process, I created a function called `resolve_gameboard()`, which wraps steps 3-5 inside it. The pseudocode of this function is as follows:

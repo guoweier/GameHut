@@ -34,7 +34,7 @@ window1主要就是设置各个变量，例如窗口的尺寸，显示的文字�
 | 内容 | 属性 |
 |-----|------|
 | 游戏框 | 600x600 pixels；6x6共36个格子；位于window右侧 |
-| 任务栏 | 210x620 pixels；显示需要消除的糖果以及剩余步骤；位于window左侧 |
+| 任务栏 | 210x620 pixels；显示任务糖果以及剩余步骤；位于window左侧 |
 | 糖果 | 共6种，颜色为红橙黄绿蓝紫，随机产生 |
 | 游戏运行规则 | 移动糖果，当3-5个糖果排成一线后消除，其上方糖果依次下落，后随机生成新的糖果填满空缺格 |
 | 得分规则 | 每局游戏会随机生成两种颜色的糖果作为任务糖果，每种糖果需要消除9个。玩家最多可移动糖果12次。若在12次之内完成任务，则胜利；若没有，则失败 |
@@ -81,7 +81,9 @@ elif MOUSEBUTTONUP:
 ```
 # find matches
 if find_matches():
-    code for remove matched candies，candy falling，refill gameboard
+    code for remove matched candies
+    code for candy falling 
+    code for refill gameboard
 else:
     animate_swap(candy2, end_cell, candy1, start_cell)
 ```
