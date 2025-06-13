@@ -12,7 +12,7 @@ Hi everyone, this is Weier. Welcome to my channel. Today, I would like to introd
 *scene2: candy crush window123*
 First, let's take a look of my candy crush. 
 
-There are 3 different windows in my tetris game:
+There are 3 different windows in my game:
 1. window1: start window. It contains welcome messages. 
 2. window2: game playing window. It is the main platform of the game. The gameboard is on the right. On the left it is the scorebar, containing target candies and remaining moves. 
 3. window3: gameover window. It displays message "YOU WIN" or "YOU LOSE", and asked if the player want to start again. 
@@ -125,7 +125,8 @@ So this code block is running like this:
 3-5. Eliminate matched candies + drop candies from above to fill empty spaces + randomly generate new candies to fill the board
 *scene3: chart flow of step3-5: P206*
 Steps 3-5 form a repeating loop. That is, once matched candies are eliminated, the game automatically enters the next round of detection using `find_matches()`. 
-If the newly updated board again contains three or more aligned candies, the sequence of "eliminate + drop + generate" must be executed again. This sequence continues to loop until no more matches are found. 
+If the newly updated board contains three or more aligned candies, the sequence of "eliminate + drop + generate" must be executed. This sequence continues to loop until no more matches are found. 
+If there is no aligned candies, the loop exit. 
 To implement this continuous process, I created a function called `resolve_gameboard()`, which wraps steps 3-5 inside it. 
 *scene3: show pseudocode block*
 The pseudocode of this function is as follows:
