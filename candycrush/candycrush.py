@@ -1,5 +1,7 @@
-import pygame, sys, random
+import pygame, sys, os, random
 from pygame.locals import *
+
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 ## PARAMETERS ##
 WINDOWWIDTH = 1100
