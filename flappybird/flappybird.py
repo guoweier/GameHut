@@ -44,39 +44,6 @@ def draw_image(img, surface, x, y):
         surface.blit(img, img_rect)
 
 # ---------- system functions ------------ #
-def check_collision(pipes):
-    for pipe, pipe_rect, _ in pipes:
-        if bird_rect.colliderect(pipe_rect):
-            return False
-    if bird_rect.top <= 0 or bird_rect.bottom >= GAMEHEIGHT:
-        return False 
-    return True 
-
-def display_score(score, game_active, best_score=0):
-    if game_active:
-        score_shadow = scorefont.render(f"{score}", True, SHADOWCOLOR)
-        score_surface = scorefont.render(f"{score}", True, TEXTCOLOR)
-        score_shadow_rect = score_shadow.get_rect(center=(WINDOWWIDTH//2+2, GAMEHEIGHT//2-150+2))
-        score_surface_rect = score_shadow.get_rect(center=(WINDOWWIDTH//2, GAMEHEIGHT//2-150))
-        windowSurface.blit(score_shadow, score_shadow_rect)
-        windowSurface.blit(score_surface, score_surface_rect)
-    else:
-        # score
-        score_shadow = scorefont.render(f"{score}", True, SHADOWCOLOR)
-        score_surface = scorefont.render(f"{score}", True, TEXTCOLOR)
-        score_shadow_rect = score_shadow.get_rect(center=(WINDOWWIDTH//2+2, GAMEHEIGHT//2-28+2))
-        score_surface_rect = score_shadow.get_rect(center=(WINDOWWIDTH//2, GAMEHEIGHT//2-28))
-        windowSurface.blit(score_shadow, score_shadow_rect)
-        windowSurface.blit(score_surface, score_surface_rect)
-        # best score
-        bestscore_shadow = scorefont.render(f"{best_score}", True, SHADOWCOLOR)
-        bestscore_surface = scorefont.render(f"{best_score}", True, TEXTCOLOR)
-        bestscore_shadow_rect = bestscore_shadow.get_rect(center=(WINDOWWIDTH//2+2, GAMEHEIGHT//2+42+2))
-        bestscore_surface_rect = bestscore_shadow.get_rect(center=(WINDOWWIDTH//2, GAMEHEIGHT//2+42))
-        windowSurface.blit(bestscore_shadow, bestscore_shadow_rect)
-        windowSurface.blit(bestscore_surface, bestscore_surface_rect)
-
-    
 def get_subset_pipe(pipe_img, height, pos):
     if pos == "top":
         pipe_crop = pipe_img.subsurface(pygame.Rect(0, pipe_img.get_height()-height, pipe_img.get_width(), height))
@@ -92,11 +59,32 @@ def create_pipe(pipe_gap):
     pipebottom_rect = pipebottom_surface.get_rect(topleft=(WINDOWWIDTH, top_pipe_height+pipe_gap))
     return [(pipebottom_surface, pipebottom_rect, False), (pipetop_surface, pipetop_rect, False)]
 
+def check_collision(pipes):
+    for pipe, pipe_rect, _ in pipes:
+        if bird_rect.colliderect(pipe_rect):
+            return False
+    if bird_rect.top <= 0 or bird_rect.bottom >= GAMEHEIGHT:
+        return False 
+    return True 
+
+def _show_score(score, x, y):
+    score_shadow = scorefont.render(f"{score}", True, SHADOWCOLOR)
+    score_surface = scorefont.render(f"{score}", True, TEXTCOLOR)
+    draw_image(score_shadow, windowSurface, x+2, y+2)
+    draw_image(score_surface, windowSurface, x, y)
+
+def display_score(score, game_active, best_score=0):
+    if game_active:
+        _show_score(score, WINDOWWIDTH//2, GAMEHEIGHT//2-150)
+    else:
+        _show_score(score, WINDOWWIDTH//2, GAMEHEIGHT//2-28)
+        _show_score(best_score, WINDOWWIDTH//2, GAMEHEIGHT//2+42)
+    
 ## VARIABLES ##
-score = 0
-best_score = 0
 game_active = True
 start_screen = True
+score = 0
+best_score = 0
 
 # background
 background_img = load_image("image/background.png", 477, 633).convert_alpha()
@@ -124,18 +112,26 @@ pipe_list = []
 SPAWNPIPE = pygame.USEREVENT
 pygame.time.set_timer(SPAWNPIPE, 1500)
 
-# gameover
+# buttons
 start_button_img = load_image("image/start.png", 132, 45).convert_alpha()
 start_button_rect = start_button_img.get_rect(center=(WINDOWWIDTH//2, WINDOWHEIGHT//2+100))
 restart_button_img = load_image("image/restart.png", 132, 45).convert_alpha()
 restart_button_rect = restart_button_img.get_rect(center=(WINDOWWIDTH//2, WINDOWHEIGHT//2+100))
+
+# scoreboard
 scoreboard_img = load_image("image/scoreboard.png", 144, 180).convert_alpha()
 scoreboard_rect = scoreboard_img.get_rect(center=(WINDOWWIDTH//2, WINDOWHEIGHT//2-50))
 
 ## WINDOW1: START WINDOW ##
 while start_screen:
-    mouse_pos = pygame.mouse.get_pos()
     mouse_click = False
+    mouse_pos = pygame.mouse.get_pos()
+    hovered = start_button_rect.collidepoint(mouse_pos)
+    scale_factor = 1.1 if hovered else 1.0
+    start_button_width = int(start_button_img.get_width() * scale_factor)
+    start_button_height = int(start_button_img.get_height() * scale_factor)
+    start_button_img_scaled = pygame.transform.smoothscale(start_button_img, (start_button_width, start_button_height))
+    start_button_rect_scaled = start_button_img_scaled.get_rect(center=start_button_rect.center)
 
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -157,12 +153,12 @@ while start_screen:
     # draw background, bird, start button
     draw_image(background_img, windowSurface, 238.5, 316.5)
     windowSurface.blit(bird_surface, bird_rect)
-    windowSurface.blit(start_button_img, start_button_rect)
+    windowSurface.blit(start_button_img_scaled, start_button_rect_scaled)
 
     # hover effect
     if start_button_rect.collidepoint(mouse_pos):
         pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
-        if mouse_click:
+        if hovered and mouse_click:
             start_screen = False 
     else:
         pygame.mouse.set_cursor(SYSTEM_CURSOR_ARROW)
@@ -170,10 +166,16 @@ while start_screen:
     pygame.display.update()
     pygame.time.Clock().tick(60)
 
-
+## WINDOW2&3 ##
 while True:
     mouse_pos = pygame.mouse.get_pos()
     mouse_click = False
+    hovered = restart_button_rect.collidepoint(mouse_pos)
+    scale_factor = 1.1 if hovered else 1.0
+    restart_button_width = int(restart_button_img.get_width() * scale_factor)
+    restart_button_height = int(restart_button_img.get_height() * scale_factor)
+    restart_button_img_scaled = pygame.transform.smoothscale(restart_button_img, (restart_button_width, restart_button_height))
+    restart_button_rect_scaled = restart_button_img_scaled.get_rect(center=restart_button_rect.center)
 
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -195,6 +197,7 @@ while True:
 
     draw_image(background_img, windowSurface, 238.5, 316.5)
 
+    ## WINDOW2: GAME WINDOW ##
     if game_active:
         # bird
         bird_movement += gravity
@@ -219,30 +222,28 @@ while True:
 
         # collision
         game_active = check_collision(pipe_list)
+
+    ## WINDOW3: GAMEOVER WINDOW ##
     else:
-        # draw pipe, bird, scoreboard, restart button
+        # draw pipe, bird, scoreboard, scores
         for pipe, pipe_rect, _ in pipe_list:
             windowSurface.blit(pipe, pipe_rect)
         windowSurface.blit(bird_gameover, bird_gameover_rect)
         windowSurface.blit(scoreboard_img, scoreboard_rect)
-        windowSurface.blit(restart_button_img, restart_button_rect)
         if int(score) > best_score:
             best_score = int(score)
         display_score(int(score), game_active, int(best_score))
+        windowSurface.blit(restart_button_img_scaled, restart_button_rect_scaled)
 
         # cursor hover effect
         if restart_button_rect.collidepoint(mouse_pos):
             pygame.mouse.set_cursor(SYSTEM_CURSOR_HAND)
-            if mouse_click:
+            if hovered and mouse_click:
                 reset_game()
                 game_active = True
         else:
             pygame.mouse.set_cursor(SYSTEM_CURSOR_ARROW)
         
-        
     pygame.display.update()
     mainClock.tick(60)
-
-                
-
 
