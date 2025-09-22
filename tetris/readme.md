@@ -1,4 +1,4 @@
-# Based on your computer system, follow the steps to run the game program
+# Tetris running instruction
 
 ## Mac & Linux
 0. Check your Python
