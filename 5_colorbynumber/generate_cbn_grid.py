@@ -82,9 +82,9 @@ def draw_numbered_board(labels: np.ndarray, cell_px: int, palette: dict | None =
     img = Image.new("RGBA", (W, H), (255,255,255,255))
     draw = ImageDraw.Draw(img)
 
-    # choose a readable font size based on cell size 
-    # try to use a default truetype if available; fallback to bitmap default
-    font = None 
+    # choose a readable font size based on cell size
+    # try to use a default truetype if available; fall back to bitmap default
+    font = None
     for size in (int(cell_px * 0.65), int(cell_px * 0.55), int(cell_px * 0.45)):
         try:
             font = ImageFont.truetype("DejaVuSans.ttf", size)
@@ -93,10 +93,10 @@ def draw_numbered_board(labels: np.ndarray, cell_px: int, palette: dict | None =
             font = None 
     if font is None:
         font = ImageFont.load_default()
-    
+
     text_color = (80,80,80, numbers_alpha)
     grid_color = (200,200,200,255)
-
+    
     # cells & numbers
     for y in range(h):
         for x in range(w):
