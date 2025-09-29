@@ -70,8 +70,9 @@ class ColorByNumberApp:
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont(None, 28)
         self.big_font = pygame.font.SysFont(None, 48)
+        self.slogan_font = pygame.font.Font("font/NotoSansSC-VariableFont_wght.ttf", 30)
 
-        self.bg = (245,245,245)
+        self.bg = (250,250,250)
         self.panel = (255,255,255)
         self.grid_c = (210,210,210)
         self.text_c = (40,40,40)
@@ -98,10 +99,17 @@ class ColorByNumberApp:
                 })
             except Exception as e:
                 print(f"Skipping {sub}: {e}")
-        
+
         # welcome screen button
         bw, bh = 220, 60
-        self.btn_start = Button(pygame.Rect((self.W -bw) // 2, int(self.H * 0.62), bw, bh), "START", self.font)
+        self.btn_start = Button(pygame.Rect((self.W-bw)//2, int(self.H//2+200), bw, bh), "START", self.font)
+        self.welcome_img = None
+        welcome_path = Path("assets/welcome.jpg")
+        if welcome_path.exists():
+            try:
+                self.welcome_img = pygame.image.load(str(welcome_path)).convert_alpha()
+            except Exception as e:
+                print(f"[welcome image load failed] {e}")
 
         # browser layout
         self.browser_scroll = 0
@@ -143,6 +151,15 @@ class ColorByNumberApp:
         self.btn_back = Button(pygame.Rect(30, self.H - 60 - 20, 160, 60), "RETURN", self.font)
 
     # --- helpers --- #
+    def _fit_center(self, surf, max_w, max_h):
+        """Scale surf to fit inside (max_w, max_h) while keeping aspect ratio."""
+        if surf is None:
+            return None 
+        sw, sh = surf.get_size()
+        scale = min(max_w/sw, max_h/sh)
+        tw, th = int(sw*scale), int(sh*scale)
+        return pygame.transform.smoothscale(surf, (tw, th))
+
     def _load_square_preview(self, img_path: Path, box: int) -> pygame.Surface:
         img = Image.open(img_path).convert("RGB")
         # make square letterbox with white background
@@ -498,8 +515,14 @@ class ColorByNumberApp:
     # ---------------------- State screens -------------------------- #
     def draw_welcome(self):
         self.screen.fill(self.bg)
-        title = self.big_font.render("Color by Number", True, self.text_c)
-        self.screen.blit(title, title.get_rect(center=(self.W // 2, int(self.H * 0.32))))
+        if self.welcome_img:
+            fitted = self._fit_center(self.welcome_img, int(self.W*0.5), int(self.H*0.5))
+            rect = fitted.get_rect(center=(self.W//2, int(self.H*0.32)))
+            self.screen.blit(fitted, rect)
+            # --- subtitle below welcome image --- #
+            tagline = self.slogan_font.render("长生不老 钓鱼爬山", True, (0,0,102))
+            tagline_rect = tagline.get_rect(center=(self.W//2, rect.bottom+40))
+            self.screen.blit(tagline, tagline_rect)
         self.btn_start.draw(self.screen)
 
     def draw_browser(self):
@@ -566,7 +589,7 @@ class ColorByNumberApp:
                 pygame.draw.rect(self.screen, (230,230,230), (bar_x, bar_y, bar_w, bar_h), border_radius=4)
                 fill_w = int(bar_w*frac)
                 if fill_w > 0:
-                    pygame.draw.rect(self.screen, (60, 180, 75), (bar_x, bar_y, fill_w, bar_h), border_radius=4)
+                    pygame.draw.rect(self.screen, (115, 145, 210), (bar_x, bar_y, fill_w, bar_h), border_radius=4)
 
     def draw_play(self):
         self.screen.fill(self.bg)
