@@ -8,6 +8,7 @@ import numpy as np
 import pygame
 from PIL import Image
 
+
 # ----------- utility IO ------------ #
 def load_puzzle(pdir: Path):
     labels = np.load(pdir / "labels.npy")
@@ -33,26 +34,84 @@ def render_solved_pil(labels: np.ndarray, palette: dict[int, tuple], scale=1):
     return img 
 
 # ------------------ basic UI primitives ----------------- #
-class Button:
-    def __init__(self, rect: pygame.Rect, text: str, font: pygame.font.Font, bg=(230,230,230), fg=(20,20,20), border=(0,0,0), hover=(210,210,210)):
-        self.rect = rect 
-        self.text = text 
-        self.font = font 
-        self.bg = bg
-        self.fg = fg 
-        self.border = border 
-        self.hover = hover 
+class ImageButton:
+    """
+    Image-based button with hover state.
+    - rect: where the button should sit on screen
+    - img_path: normal PNG
+    - hover_img_path: hover PNG (falls back to normal if missing)
+    - scale_mode: 'fit' (default), 'stretch', 'fi_no_upscale', or 'none'
+    - padding: inset (px) inside rect before fitting/scaling the image
+    - hover_scale: optional subtle enlargement on hover
+    """
+    def __init__(self, rect: pygame.Rect, img_path: str, hover_img_path: str | None = None, scale_mode: str="fit", padding: int = 0, hover_scale: float = 1.0):
+        self.rect = pygame.Rect(rect)
+        self.scale_mode = scale_mode
+        self.padding = int(padding)
+        self.hover_scale = float(hover_scale)
+        self.enabled = True
 
-    def draw(self, surf):
-        mx, my = pygame.mouse.get_pos()
-        hovering = self.rect.collidepoint(mx, my)
-        pygame.draw.rect(surf, self.hover if hovering else self.bg, self.rect, border_radius=10)
-        pygame.draw.rect(surf, self.border, self.rect, 2, border_radius=10)
-        label = self.font.render(self.text, True, self.fg)
-        surf.blit(label, label.get_rect(center=self.rect.center))
+        def _load(path):
+            s = pygame.image.load(path).convert_alpha()
+            return s
+        
+        self.img = _load(img_path)
+        if hover_img_path and Path(hover_img_path).exists():
+            self.img_hover = _load(hover_img_path)
+        else:
+            self.img_hover = self.img
+
+        # cache for scaled surfaces keyed by rect.size
+        self._cache_size = None
+        self._scaled_normal = None
+        self._scaled_hover = None
+
+    def _rescale_if_needed(self):
+        if self._cache_size == self.rect.size:
+            return
+        w, h = self.rect.size
+        iw, ih = self.img.get_size()
+        maxw, maxh = max(1, w-2*self.padding), max(1, h-2*self.padding)
+
+        if self.scale_mode == "stretch":
+            tn = (maxw, maxh)
+            self._scaled_normal = pygame.transform.smoothscale(self.img, tn)
+            self._scaled_hover = pygame.transform.smoothscale(self.img_hover, tn)
+        elif self.scale_mode in ("fit", "fit_no_upscale"):
+            scale = min(maxw/iw, maxh/ih)
+            if self.scale_mode == "fit_no_upscale":
+                scale = min(1.0, scale)
+            tw, th = max(1, int(iw*scale)), max(1, int(ih*scale))
+            self._scaled_normal = pygame.transform.smoothscale(self.img, (tw, th))
+            self._scaled_hover = pygame.transform.smoothscale(self.img_hover, (tw, th))
+        else:
+            self._scaled_normal = self.img
+            self._scaled_hover = self.img_hover
+        
+        self._cache_size = self.rect.size
+
+    def draw(self, surf: pygame.Surface):
+        self._rescale_if_needed()
+        hovered = self.enabled and self.rect.collidepoint(pygame.mouse.get_pos())
+        s = self._scaled_hover if hovered else self._scaled_normal
+
+        # optional: gentle enlargement on hover
+        if hovered and self.hover_scale != 1.0:
+            tw, th = s.get_size()
+            tw2, th2 = max(1, int(tw*self.hover_scale)), max(1, int(th*self.hover_scale))
+            s = pygame.transform.smoothscale(s, (tw2, th2))
+        # center image within rect
+        surf.blit(s, s.get_rect(center=self.rect.center))
+
+    def clicked(self, event) -> bool:
+        return (self.enabled 
+                and event.type == pygame.MOUSEBUTTONDOWN
+                and event.button == 1
+                and self.rect.collidepoint(event.pos))
     
-    def clicked(self, event):
-        return (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.rect.collidepoint(event.pos))
+    def set_enabled(self, val: bool):
+        self.enabled = bool(val)
+
     
 # ------------ App States ------------- #
 STATE_WELCOME = "WELCOME"
@@ -70,7 +129,8 @@ class ColorByNumberApp:
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont(None, 28)
         self.big_font = pygame.font.SysFont(None, 48)
-        self.slogan_font = pygame.font.Font("font/NotoSansSC-VariableFont_wght.ttf", 30)
+        self.slogan_font = pygame.font.Font("font/AaZhuNiWoMingMeiXiangChunTian-2.ttf", 28)
+        self.title_font = pygame.font.Font("font/LiXuKeShuFa-1.ttf", 44)
 
         self.bg = (250,250,250)
         self.panel = (255,255,255)
@@ -101,8 +161,13 @@ class ColorByNumberApp:
                 print(f"Skipping {sub}: {e}")
 
         # welcome screen button
-        bw, bh = 220, 60
-        self.btn_start = Button(pygame.Rect((self.W-bw)//2, int(self.H//2+200), bw, bh), "START", self.font)
+        bw, bh = 440, 60
+        self.btn_start = ImageButton(
+            pygame.Rect((self.W-440)//2, int(self.H//2+200), bw, bh),
+            str("assets/btn_start.png"),
+            str("assets/btn_start_hover.png"),
+            scale_mode="fit", padding=6, hover_scale=1.03
+        )
         self.welcome_img = None
         welcome_path = Path("assets/welcome.jpg")
         if welcome_path.exists():
@@ -117,6 +182,7 @@ class ColorByNumberApp:
         self.browser_cols = 2
         self.browser_card_max = 140
         self.browser_card_gap = 50
+        self.browser_title_h = 100
 
         # active puzzle (set in PLAY)
         self.active = None # dict like in self.puzzles
@@ -135,6 +201,12 @@ class ColorByNumberApp:
         self.dragging = False 
         self.drag_anchor = None 
 
+        # paint while drag
+        self.painting = False
+        self.last_paint_cell = None
+        self.dragging_pan = False
+        self.progress_dirty = False # batch save at stroke end
+
         # palette bar geometry (bottom)
         self.palette_bar_h = 110
         self.palette_swatches = [] # (label, rect)
@@ -144,13 +216,66 @@ class ColorByNumberApp:
         self._palette_right_btn = pygame.Rect(0,0,0,0)
 
         # back button in play window
-        self.btn_play_back = Button(pygame.Rect(16, 12, 110, 40), "BACK", self.font)
+        self.btn_play_back = ImageButton(
+            pygame.Rect(16, 12, 110, 40),
+            str("assets/btn_back.png"),
+            str("assets/btn_back_hover.png"),
+            scale_mode="fit", padding=4, hover_scale=1.03
+        )
         
         # finished buttons
-        self.btn_save = Button(pygame.Rect(self.W - 160 - 30, self.H -60 - 20, 160, 60), "SAVE", self.font)
-        self.btn_back = Button(pygame.Rect(30, self.H - 60 - 20, 160, 60), "RETURN", self.font)
+        self.btn_save = ImageButton(
+            pygame.Rect((self.W-440)//2, self.H-60*2-40, 440, 60),
+            str("assets/btn_save.png"),
+            str("assets/btn_save_hover.png"),
+            scale_mode="fit", padding=6, hover_scale=1.03
+        )
+        self.btn_back = ImageButton(
+            pygame.Rect((self.W-440)//2, self.H-60-20, 440, 60),
+            str("assets/btn_back_finish.png"),
+            str("assets/btn_back_finish_hover.png"),
+            scale_mode="fit", padding=6, hover_scale=1.03
+        )
 
     # --- helpers --- #
+    def _fill_cell_if_match(self, cx, cy):
+        """Fill cell (cx, cy) if it's the selected label and not already filled."""
+        labels = self.active["labels"]
+        H, W = labels.shape
+        if not (0 <= cx < W and 0 <= cy < H):
+            return False 
+        lab = int(labels[cy, cx])
+        if (not self.filled_ok[cy, cx]) and (lab == self.selected_label):
+            self.filled_ok[cy, cx] = True
+            self.color_filled[lab] += 1
+            self.progress_dirty = True
+            return True
+        return False
+    
+    def _bresenham_cell(self, c0, c1):
+        """Yield grid cells between c0 and c1 inclusive using Bresenham."""
+        x0, y0 = c0
+        x1, y1 = c1
+        dx = abs(x1-x0); sx = 1 if x0 < x1 else -1
+        dy = -abs(y1-y0); sy = 1 if y0 < y1 else -1
+        err = dx+dy
+        while True:
+            yield (x0, y0)
+            if x0 == x1 and y0 == y1:
+                break
+            e2 = 2*err
+            if e2 >= dy:
+                err += dy
+                x0 += sx
+            if e2 <= dx:
+                err += dx
+                y0 += sy
+    
+    def _paint_line_between(self, c0, c1):
+        """Paint along the path between two cells, repecting selected label."""
+        for cx, cy in self._bresenham_cell(c0, c1):
+            self._fill_cell_if_match(cx, cy)
+
     def _fit_center(self, surf, max_w, max_h):
         """Scale surf to fit inside (max_w, max_h) while keeping aspect ratio."""
         if surf is None:
@@ -179,15 +304,12 @@ class ColorByNumberApp:
         H, W = labels.shape 
         board_w = W * self.BASE_CELL
         board_h = H * self.BASE_CELL
-
         # view area above the palette bar (leave a small margin)
         margin = 20
         avail_w = self.W - margin * 2
         avail_h = self.H - self.palette_bar_h - margin * 2
-
         if board_w == 0 or board_h == 0:
             return 0.5
-        
         # zoom that *just fits* the whole board into the available area 
         return min(avail_w/board_w, avail_h/board_h)
     
@@ -196,16 +318,13 @@ class ColorByNumberApp:
         H, W = labels.shape
         bw = W*self.BASE_CELL*self.zoom
         bh = H*self.BASE_CELL*self.zoom
-
         # viewport where the board is visiable (above the palette bar)
         viewport_x = 0
         viewport_y = 0
         viewport_w = self.W 
         viewport_h = self.H-self.palette_bar_h
-
         # how much border you want at most when the board is larger than the view port
         margin = 80
-
         # horizontal clamp
         if bw+2*margin <= viewport_w:
             # board is narrower than viewport: keep it centered; no dragging outside
@@ -214,7 +333,6 @@ class ColorByNumberApp:
             min_x = viewport_x+viewport_w-bw-margin # rightmost (board's right edge inside)
             max_x = viewport_x+margin 
             self.pan.x = max(min(self.pan.x, max_x), min_x)
-
         # vertical clamp
         if bh+2*margin <= viewport_h:
             # board is shorter than viewport: center vertically
@@ -260,7 +378,6 @@ class ColorByNumberApp:
         s.fill((255,255,255))
         font = pygame.font.SysFont(None, max(12, int(self.BASE_CELL * 0.55)))
         H, W = labels.shape
-
         # colors
         highlight_bg = (230,230,230)
         empty_bg = (250,250,250)
@@ -375,38 +492,42 @@ class ColorByNumberApp:
             rect = pygame.Rect(x, grid_y0, sw, sh)
             col_rgb = palette[label]
 
-            # if this color is complete, grey it and (visually) disable
+            # if this color is complete, disable it
+            pygame.draw.rect(self.screen, col_rgb, rect)
             done = self.color_filled.get(label, 0) >= self.color_total.get(label, 0)
-            draw_rgb = (180,180,180) if done else col_rgb
-            pygame.draw.rect(self.screen, draw_rgb, rect)
+            # draw_rgb = (180,180,180) if done else col_rgb
+            if done:
+                check_color = (255,255,255) if is_dark(col_rgb) else (0,0,0)
+                check_txt = base_font.render("√", True, check_color)
+                self.screen.blit(check_txt, check_txt.get_rect(center=rect.center))
+            else:
+                # Centered number; auto-contrast; larger when selected
+                font_for_label = selected_font if label == self.selected_label else base_font
+                txt_color = (255, 255, 255) if is_dark(col_rgb) else (0, 0, 0)
+                txt = font_for_label.render(str(label), True, txt_color)
+                self.screen.blit(txt, txt.get_rect(center=rect.center))
 
-            # Centered number; auto-contrast; larger when selected
-            font_for_label = selected_font if label == self.selected_label else base_font
-            txt_color = (255, 255, 255) if is_dark(col_rgb) else (0, 0, 0)
-            txt = font_for_label.render(str(label), True, txt_color)
-            self.screen.blit(txt, txt.get_rect(center=rect.center))
+                # white progress bar under the number
+                if (label == self.selected_label) and (not done):
+                    tot = max(1, self.color_total.get(label, 1))
+                    filled = min(tot, self.color_filled.get(label, 0))
 
-            # white progress bar under the number
-            if (label == self.selected_label) and (not done):
-                tot = max(1, self.color_total.get(label, 1))
-                filled = min(tot, self.color_filled.get(label, 0))
+                    bar_margin = max(2, int(sw*0.1))
+                    bar_h = max(2, int(sw*0.05))
+                    bar_w = rect.w-bar_margin*2
+                    bar_x = rect.x+bar_margin
+                    bar_y = rect.bottom-int(sw*0.2)
 
-                bar_margin = max(2, int(sw*0.1))
-                bar_h = max(2, int(sw*0.05))
-                bar_w = rect.w-bar_margin*2
-                bar_x = rect.x+bar_margin
-                bar_y = rect.bottom-int(sw*0.2)
+                    # bar color matches label contrast rule 
+                    bar_color = (255,255,255) if is_dark(col_rgb) else (0,0,0)
 
-                # bar color matches label contrast rule 
-                bar_color = (255,255,255) if is_dark(draw_rgb) else (0,0,0)
+                    # background track (thin dar to frame the white)
+                    pygame.draw.rect(self.screen, bar_color, (bar_x-1, bar_y-1, bar_w+2, bar_h+2), 1)
 
-                # background track (thin dar to frame the white)
-                pygame.draw.rect(self.screen, bar_color, (bar_x-1, bar_y-1, bar_w+2, bar_h+2), 1)
-
-                # progress fill (white)
-                prog_w = int(bar_w*(filled/tot))
-                if prog_w > 0:
-                    pygame.draw.rect(self.screen, bar_color, (bar_x, bar_y, prog_w, bar_h))
+                    # progress fill (white)
+                    prog_w = int(bar_w*(filled/tot))
+                    if prog_w > 0:
+                        pygame.draw.rect(self.screen, bar_color, (bar_x, bar_y, prog_w, bar_h))
 
             self.palette_swatches.append((label, rect))
             x += sw  # no gap
@@ -520,7 +641,7 @@ class ColorByNumberApp:
             rect = fitted.get_rect(center=(self.W//2, int(self.H*0.32)))
             self.screen.blit(fitted, rect)
             # --- subtitle below welcome image --- #
-            tagline = self.slogan_font.render("长生不老 钓鱼爬山", True, (0,0,102))
+            tagline = self.slogan_font.render("长生不老 钓鱼爬山", True, (0,76,153))
             tagline_rect = tagline.get_rect(center=(self.W//2, rect.bottom+40))
             self.screen.blit(tagline, tagline_rect)
         self.btn_start.draw(self.screen)
@@ -528,8 +649,14 @@ class ColorByNumberApp:
     def draw_browser(self):
         self.screen.fill(self.bg)
 
+        # --- fixed title panel --- #
+        header_rect = pygame.Rect(0,0, self.W, self.browser_title_h)
+        
+        # pygame.draw.line(self.screen, self.grid_c, (0, header_rect.bottom), (self.W, header_rect.bottom), 1) 
+
+        # --- scrollable grid area --- #
         gap = self.browser_card_gap
-        area_top = 20
+        area_top = header_rect.bottom+20
 
         # compute square card size for current width
         avail_w = self.W-gap*(self.browser_cols+1) 
@@ -549,6 +676,9 @@ class ColorByNumberApp:
         self.browser_scroll = max(min(self.browser_scroll, max_scroll), min_scroll)
         self._browser_min_scroll = min_scroll
         self._browser_max_scroll = max_scroll
+        
+        # clip all drawing to the area below the header
+        self.screen.set_clip(pygame.Rect(0, area_top, self.W, self.H-area_top))
 
         # build rects
         self.browser_item_rects = []
@@ -579,17 +709,29 @@ class ColorByNumberApp:
             # ---- progress bar at bottom of card ---- #
             if not self._is_puzzle_complete(p):
                 frac = self._puzzle_progress(p)
-                bar_h = max(3, r.h//24)
+                bar_h = max(3, r.h//30)
                 bar_pad = max(8, r.w//18)
                 bar_w = r.w-bar_pad*2
                 bar_x = r.x+bar_pad
                 bar_y = r.bottom-bar_pad-bar_h 
 
-                # track (light gray) + fill (green)
-                pygame.draw.rect(self.screen, (230,230,230), (bar_x, bar_y, bar_w, bar_h), border_radius=4)
+                # track (light gray) + fill (blue)
+                bar_surf = pygame.Surface((bar_w, bar_h), pygame.SRCALPHA)
+                bg_color = (230,230,230,150)
+                fill_color = (115,145,210,240)
+                pygame.draw.rect(bar_surf, bg_color, (0, 0, bar_w, bar_h), border_radius=4)
                 fill_w = int(bar_w*frac)
                 if fill_w > 0:
-                    pygame.draw.rect(self.screen, (115, 145, 210), (bar_x, bar_y, fill_w, bar_h), border_radius=4)
+                    pygame.draw.rect(bar_surf, fill_color, (0, 0, fill_w, bar_h), border_radius=4)
+                self.screen.blit(bar_surf, (bar_x, bar_y))
+
+        # reset clip so the header draws normally
+        self.screen.set_clip(None)
+
+        # draw the header
+        pygame.draw.rect(self.screen, self.panel, header_rect)
+        title_surf = self.title_font.render("彩虹都害羞，不愿上镜头", True, (0,76,153))
+        self.screen.blit(title_surf, title_surf.get_rect(center=header_rect.center))
 
     def draw_play(self):
         self.screen.fill(self.bg)
@@ -632,33 +774,40 @@ class ColorByNumberApp:
         labels = self.active["labels"]
         palette = self.active["palette"]
 
-        # render solved image (fit to view area)
+        # --- layout constants --- #
         margin = 30
+        gap_img_to_first_btn = 24
+        gap_between_buttons = 12
+        # use existing button sizes
+        btn_w, btn_h = self.btn_save.rect.size
+        # area for the solved image above the buttons
         area = pygame.Rect(margin, margin, self.W - margin * 2, self.H - margin * 2 - 90)
-        # make a PIL image then to pygame 
-        # choose scale to fit
-        H, W = labels.shape
+        
+        # --- render solved image, scale to fit area with NEAREST for crisp pixels --- #
         solved = render_solved_pil(labels, palette, scale=1)
         sw, sh = solved.size
-        scale = min(area.w / sw, area.h / sh)
-        scale = max(1, int(scale)) # use integer to keep nearest crisp
-        solved = solved.resize((sw * scale, sh * scale), Image.Resampling.NEAREST)
-        mode = solved.mode 
-        data = solved.tobytes()
-        surf = pygame.image.fromstring(data, solved.size, mode)
+        if sw == 0 or sh == 0:
+            return 
+        scale = min(area.w/sw, area.h/sh)
+        scale = max(1, int(scale))
+        solved = solved.resize((sw*scale, sh*scale), Image.Resampling.NEAREST)
+        surf = pygame.image.fromstring(solved.tobytes(), solved.size, solved.mode)
 
-        # draw card
-        card = area.inflate(-20, -20)
-        pygame.draw.rect(self.screen, self.panel, card, border_radius=12)
-        pygame.draw.rect(self.screen, (0,0,0), card, 2, border_radius=12)
-        self.screen.blit(surf, surf.get_rect(center=card.center))
+        # card container for the image
+        img_rect = surf.get_rect(center=area.center)
+        self.screen.blit(surf, img_rect)
 
-        title = self.big_font.render("Finished!", True, (0,120,0))
-        self.screen.blit(title, (card.x + 16, card.y + 12))
+        # centered buttons below the image
+        y0 = img_rect.bottom+gap_img_to_first_btn
 
-        # buttons
-        self.btn_back.draw(self.screen)
+        # save buton centered
+        self.btn_save.rect.topleft = (self.W//2-btn_w//2, int(y0))
+        # back button centered below save button
+        self.btn_back.rect.topleft = (self.W//2-self.btn_back.rect.w//2, int(y0+btn_h+gap_between_buttons))
+
+        # draw buttons
         self.btn_save.draw(self.screen)
+        self.btn_back.draw(self.screen)
 
     # -------------------- Event handling ----------------------- #
     def handle_events(self):
@@ -673,15 +822,19 @@ class ColorByNumberApp:
 
             elif self.state == STATE_BROWSER:
                 if e.type == pygame.MOUSEWHEEL:
-                    # pygame: e.y > 0 = scroll up, e.y < 0 = scroll down
-                    self.browser_scroll += e.y * 40
-                    # clamp using limits computed in draw_browser()
-                    if hasattr(self, "_browser_min_scroll"):
-                        self.browser_scroll = max(min(self.browser_scroll, self._browser_max_scroll), self._browser_min_scroll)
+                    mx, my = pygame.mouse.get_pos()
+                    if my >= self.browser_title_h:
+                        self.browser_scroll += e.y * 40
+                        # clamp using limits computed in draw_browser()
+                        if hasattr(self, "_browser_min_scroll"):
+                            self.browser_scroll = max(min(self.browser_scroll, self._browser_max_scroll), self._browser_min_scroll)
                 elif e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
                     for rect, puzzle in zip(self.browser_item_rects, self.puzzles):
                         if rect.collidepoint(e.pos):
-                            self._enter_play(puzzle)
+                            if self._is_puzzle_complete(puzzle):
+                                self._enter_finished(puzzle)
+                            else:
+                                self._enter_play(puzzle)
                             break 
 
             elif self.state == STATE_PLAY:
@@ -700,85 +853,85 @@ class ColorByNumberApp:
                     # keep cursor point anchored
                     self.pan += (after-before)*self.zoom 
                     self._clamp_pan(self.active["labels"])
-                elif e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
-                    # back button
-                    if self.btn_play_back.rect.collidepoint(e.pos):
-                        try:
+                elif e.type == pygame.MOUSEBUTTONDOWN:
+                    if e.button == 1:
+                        # back button
+                        if self.btn_play_back.rect.collidepoint(e.pos):
                             self._save_progress()
-                        except Exception:
-                            pass 
-                        self.state = STATE_BROWSER
-                        return True 
-                    # first: arrow buttons
-                    if self._palette_left_btn.collidepoint(e.pos) and self.palette_page > 0:
-                        self.palette_page -= 1
-                        # prevent starting a drag if clicked arrow
-                        return True 
-                    if self._palette_right_btn.collidepoint(e.pos) and self.palette_page < self._palette_pages-1:
-                        self.palette_page += 1
-                        return True
-                    # next: swatches
-                    self.dragging = True 
-                    self.drag_anchor = pygame.Vector2(e.pos)
-                    # check palette swatches first
-                    for lab, r in self.palette_swatches:
-                        if r.collidepoint(e.pos):
-                            # ignore fully completed colors
-                            if self.color_filled.get(lab, 0) >= self.color_total.get(lab, 0):
-                                return True 
-                            self.selected_label = lab 
-                            self.dragging = False 
-                            self.drag_anchor = None 
+                            self.state = STATE_BROWSER
                             return True 
-                elif e.type == pygame.MOUSEBUTTONUP and e.button == 1:
-                    if self.drag_anchor is not None:
-                        moved = (pygame.Vector2(e.pos) - self.drag_anchor).length() >= 5
-                    else:
-                        moved = False 
-                    if not moved:
-                        # treat as click on board
+                        # first: arrow buttons
+                        if self._palette_left_btn.collidepoint(e.pos) and self.palette_page > 0:
+                            self.palette_page -= 1
+                            # prevent starting a drag if clicked arrow
+                            return True 
+                        if self._palette_right_btn.collidepoint(e.pos) and self.palette_page < self._palette_pages-1:
+                            self.palette_page += 1
+                            return True
+                        # check palette swatches first
+                        for lab, r in self.palette_swatches:
+                            if r.collidepoint(e.pos):
+                                # ignore fully completed colors
+                                if self.color_filled.get(lab, 0) < self.color_total.get(lab, 0):
+                                    self.selected_label = lab
+                                return True 
+                        # board: start paint if the start cell matches; else start pan
                         bx, by = self._screen_to_board(e.pos)
                         cell = self._board_to_cell(self.active["labels"], bx, by)
-                        if cell:
+                        if cell is not None:
                             cx, cy = cell
-                            lab = int(self.active["labels"][cy, cx])
-                            if (not self.filled_ok[cy, cx]) and (self.selected_label == lab):
-                                self.filled_ok[cy, cx] = True
-                                # update per-color progress
-                                self.color_filled[lab] += 1
-                                # autosave right after each change
-                                self._save_progress()
-                                # if this color is now done, and it's the selected color, jump to nextselectable
-                                if self.color_filled[lab] >= self.color_total[lab]:
-                                    # auto-advance to next imcomplete color on this page
-                                    for nxt in range(1, len(self.active["palette"])+1):
-                                        if self.color_filled[nxt] < self.color_total[nxt]:
-                                            self.selected_label = nxt
-                                            break 
-                                # puzzle finished
-                                if self.filled_ok.all():
-                                    self.state = STATE_FINISHED
-                    self.dragging = False 
-                    self.drag_anchor = None 
-                elif e.type == pygame.MOUSEMOTION and self.dragging and self.drag_anchor is not None:
-                    delta = pygame.Vector2(e.pos) - self.drag_anchor
-                    self.pan += delta
-                    self.drag_anchor = pygame.Vector2(e.pos)
-                    self._clamp_pan(self.active["labels"])
-                elif e.type == pygame.KEYDOWN:
-                    if e.key == pygame.K_LEFT and self.palette_page > 0:
-                        self.palette_page -= 1
-                    elif e.key == pygame.K_RIGHT and self.palette_page < self._palette_pages-1:
-                        self.palette_page += 1
+                            start_lab = int(self.active["labels"][cy, cx])
+                            if (start_lab == self.selected_label) and (not self.filled_ok[cy, cx]):
+                                self.painting = True
+                                self.last_paint_cell = (cx, cy)
+                                self._fill_cell_if_match(cx, cy) # paint the first cell immediately
+                            else:
+                                self.dragging_pan = True
+                                self.drag_anchor = pygame.Vector2(e.pos)
+                        else:
+                            self.dragging_pan = True
+                            self.drag_anchor = pygame.Vector2(e.pos)
+                    elif e.button in (2,3): # middle/right drag to pan
+                        self.dragging_pan = True
+                        self.drag_anchor = pygame.Vector2(e.pos)
+                elif e.type == pygame.MOUSEMOTION:
+                    if self.painting:
+                        bx, by = self._screen_to_board(e.pos)
+                        cell = self._board_to_cell(self.active["labels"], bx, by)
+                        if cell is not None and cell != self.last_paint_cell:
+                            self._paint_line_between(self.last_paint_cell, cell)
+                            self.last_paint_cell = cell
+                    elif self.dragging_pan and self.drag_anchor is not None:
+                        delta = pygame.Vector2(e.pos)-self.drag_anchor
+                        self.pan += delta
+                        self.drag_anchor = pygame.Vector2(e.pos)
+                        self._clamp_pan(self.active["labels"])
+                elif e.type == pygame.MOUSEBUTTONUP:
+                    if e.button == 1 and self.painting:
+                        self.painting = False
+                        self.last_paint_cell = None
+                        # if selected finished, auto-advance to next incomplete
+                        lab = self.selected_label
+                        if self.color_filled.get(lab, 0) >= self.color_total.get(lab, 0):
+                            for nxt in range(1, len(self.active["palette"])+1):
+                                if self.color_filled.get(nxt, 0) < self.color_total.get(nxt, 0):
+                                    self.selected_label = nxt
+                                    break
+                        # puzzle finished
+                        if self.filled_ok.all():
+                            self._save_progress()
+                            self.progress_dirty = False
+                            self.state = STATE_FINISHED
+                            return True
+                        if self.progress_dirty:
+                            self._save_progress()
+                            self.progress_dirty = False
+
+                    elif e.button in (1,2,3) and self.dragging_pan:
+                        self.dragging_pan = False
+                        self.drag_anchor = None 
             
             elif self.state == STATE_FINISHED:
-                try:
-                    npy_path, json_path = self._progress_paths(self.active["dir"])
-                    if npy_path.exists(): npy_path.unlink()
-                    if json_path.exists(): json_path.unlink()
-                except Exception:
-                    pass
-
                 if self.btn_back.clicked(e):
                     self.state = STATE_BROWSER
                 elif self.btn_save.clicked(e):
@@ -806,7 +959,16 @@ class ColorByNumberApp:
 
         # try to load prior progress
         self._load_progress(self.active)
+        # if already complete, show Finished instead of Play
+        if self.filled_ok is not None and self.filled_ok.size > 0 and self.filled_ok.all():
+            self.state = STATE_FINISHED
+            return
+        
         self.state = STATE_PLAY
+
+    def _enter_finished(self, puzzle):
+        self.active = puzzle
+        self.state = STATE_FINISHED
 
     def _save_finished_png(self):
         labels = self.active["labels"]
