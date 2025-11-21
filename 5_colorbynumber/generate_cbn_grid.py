@@ -17,11 +17,12 @@ def parse_xy(s: str):
         raise argparse.ArgumentTypeError("grid must be positive")
     return w, h 
 
+# -------------- 1. image to grid --------------- #
 def quantize_image_to_grid(image_path: Path, grid_w: int, grid_h: int, k_colors: int):
     """
     Returns:
         labels: (H, W) np.int32 in [1..K]
-        pallete: dict {1: (R,G,B), ...}
+        palette: dict {1: (R,G,B), ...}
         preview_img: PIL.Image of the posterized grid (W X H)
     Steps:
         - load image (RGB)
@@ -32,7 +33,6 @@ def quantize_image_to_grid(image_path: Path, grid_w: int, grid_h: int, k_colors:
     img = Image.open(image_path).convert("RGB")
     # resize to grid cells (board resolution)
     img_small = img.resize((grid_w, grid_h), Image.Resampling.BILINEAR)
-
     # quantize to k_colors
     img_q = img_small.quantize(colors=k_colors, method=Image.MEDIANCUT)
     # extract palette from the quantized image 
@@ -70,6 +70,7 @@ def quantize_image_to_grid(image_path: Path, grid_w: int, grid_h: int, k_colors:
 
     return labels.astype(np.int32), palette, preview
 
+# -------------- 2. draw grid board (optional) --------------- #
 def draw_numbered_board(labels: np.ndarray, cell_px: int, palette: dict | None = None, show_grid: bool = True, numbers_alpha: int = 255) -> Image.Image:
     """
     Create a big image that shows each cell with its number in the center. 
@@ -122,6 +123,7 @@ def draw_numbered_board(labels: np.ndarray, cell_px: int, palette: dict | None =
     
     return img 
 
+# -------------- 3. output --------------- #
 def save_outputs(out_dir: Path, labels: np.ndarray, palette: dict, preview_small: Image.Image, cell_px: int):
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -145,6 +147,7 @@ def save_outputs(out_dir: Path, labels: np.ndarray, palette: dict, preview_small
     board_img = draw_numbered_board(labels, cell_px=cell_px, palette=None, show_grid=True, numbers_alpha=255)
     board_img.convert("RGB").save(out_dir / "board_numbers.png")
 
+# ----------------- main ------------------ #
 def main():
     parser = argparse.ArgumentParser(description="Generate Color-by-Number grid, labels, palette, and numbered board.")
     parser.add_argument("image", help="input image path")

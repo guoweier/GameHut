@@ -495,7 +495,6 @@ class ColorByNumberApp:
             # if this color is complete, disable it
             pygame.draw.rect(self.screen, col_rgb, rect)
             done = self.color_filled.get(label, 0) >= self.color_total.get(label, 0)
-            # draw_rgb = (180,180,180) if done else col_rgb
             if done:
                 check_color = (255,255,255) if is_dark(col_rgb) else (0,0,0)
                 check_txt = base_font.render("√", True, check_color)
@@ -524,7 +523,7 @@ class ColorByNumberApp:
                     # background track (thin dar to frame the white)
                     pygame.draw.rect(self.screen, bar_color, (bar_x-1, bar_y-1, bar_w+2, bar_h+2), 1)
 
-                    # progress fill (white)
+                    # progress fill
                     prog_w = int(bar_w*(filled/tot))
                     if prog_w > 0:
                         pygame.draw.rect(self.screen, bar_color, (bar_x, bar_y, prog_w, bar_h))
@@ -651,8 +650,6 @@ class ColorByNumberApp:
 
         # --- fixed title panel --- #
         header_rect = pygame.Rect(0,0, self.W, self.browser_title_h)
-        
-        # pygame.draw.line(self.screen, self.grid_c, (0, header_rect.bottom), (self.W, header_rect.bottom), 1) 
 
         # --- scrollable grid area --- #
         gap = self.browser_card_gap
