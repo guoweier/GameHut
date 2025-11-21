@@ -1,4 +1,4 @@
-# #4 Flappy Bird: Recreated with Python 
+# Flappy Bird: Recreated with Python 
 ![Flappy Bird](image/banner.png)
 
 ## Project Structure
@@ -14,7 +14,7 @@ color-by-number/
 ## How to use
 ### 1. Download the project
 **Option A — Download ONLY this folder**<br>
-If you want just the Color By Number project (not the entire GameHut repo):
+If you want just the Flappy Bird project (not the entire GameHut repo):
 1. Copy this folder link: https://github.com/guoweier/GameHut/tree/main/4_flappybird
 2. Go to: https://download-directory.github.io/
 3. Paste → download ZIP

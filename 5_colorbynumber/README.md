@@ -1,4 +1,4 @@
-# #5 Color By Number: A Python mini-game themed in film *Lanyu*
+# Color By Number: A Python mini-game themed in film *Lanyu*
 ![Color By Number](tutorial/banner.png)
 
 ## Project Structure
