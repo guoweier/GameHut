@@ -1,5 +1,5 @@
-# Tetris: Recreated with python
 ![Tetris](image/label.png)
+# Tetris: Recreated with python
 
 ## Project Structure
 

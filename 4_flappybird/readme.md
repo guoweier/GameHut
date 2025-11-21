@@ -1,5 +1,5 @@
-# Flappy Bird: Recreated with Python 
 ![Flappy Bird](image/banner.png)
+# Flappy Bird: Recreated with Python 
 
 ## Project Structure
 

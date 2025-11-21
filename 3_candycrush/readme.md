@@ -1,5 +1,5 @@
-# Candy Crush: Recreated with python
 ![Candy Crush](image/banner.png)
+# Candy Crush: Recreated with python
 
 ## Project Structure
 

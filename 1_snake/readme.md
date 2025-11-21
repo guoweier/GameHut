@@ -1,5 +1,5 @@
-# Snake: Recreated with python
 ![Snake](image/banner.png)
+# Snake: Recreated with python
 
 ## Project Structure
 
