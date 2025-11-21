@@ -1,4 +1,4 @@
-# 100 GAMES WITH PYTHON - #5 Color By Number
+# 100 GAMES WITH PYTHON: #5 Color By Number
 ![Color By Number](tutorial/banner.png)
 
 ## Color By Number: A Python mini-game themed in film *Lanyu*

@@ -1,4 +1,4 @@
-# 100 GAMES WITH PYTHON - #4 Flappy Bird
+# 100 GAMES WITH PYTHON: #4 Flappy Bird
 ![Flappy Bird](image/banner.png)
 
 ## Flappy Bird: Recreated with Python 
